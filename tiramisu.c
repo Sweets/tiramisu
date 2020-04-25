@@ -9,10 +9,11 @@
 #include "config.h"
 
 GDBusConnection *dbus_connection = NULL;
+GDBusNodeInfo *introspection = NULL;
 
 /* Build introspection XML based on configuration */
 
-const char *introspection = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+const char *xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<node name=\"/org/freedesktop/Notifications\">\n"
     "   <interface name=\"org.freedesktop.Notifications\">\n"
     "       <method name=\"Notify\">\n"
@@ -41,11 +42,10 @@ int main(int argc, char **argv) {
     GMainLoop *main_loop;
 
     guint owned_name;
-    GDBusNodeInfo *introspection_data;
 
     /* Connect to DBUS */
 
-    introspection_data = g_dbus_node_info_new_for_xml(introspection, NULL);
+    introspection = g_dbus_node_info_new_for_xml(xml, NULL);
     owned_name = g_bus_own_name(G_BUS_TYPE_SESSION,
         "org.freedesktop.Notifications",
         G_BUS_NAME_OWNER_FLAGS_NONE,
@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
     g_main_loop_run(main_loop);
     g_clear_pointer(&main_loop, g_main_loop_unref);
 
-    g_clear_pointer(&introspection_data, g_dbus_node_info_unref);
+    g_clear_pointer(&introspection, g_dbus_node_info_unref);
     g_bus_unown_name(owned_name);
 
 }
