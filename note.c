@@ -5,9 +5,13 @@
 #include <glib.h>
 
 #include "note.h"
+#include "callbacks.h"
 #include "config.h"
 
 GDBusConnection *dbus_connection = NULL;
+
+/* Build introspection XML based on configuration */
+
 const char *introspection = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<node name=\"/org/freedesktop/Notifications\">\n"
     "   <interface name=\"org.freedesktop.Notifications\">\n"
@@ -34,21 +38,31 @@ const char *introspection = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "</node>";
 
 int main(int argc, char **argv) {
-    /* Build introspection */
+    GMainLoop *main_loop;
+
     guint owned_name;
     GDBusNodeInfo *introspection_data;
+
+    /* Connect to DBUS */
 
     introspection_data = g_dbus_node_info_new_for_xml(introspection, NULL);
     owned_name = g_bus_own_name(G_BUS_TYPE_SESSION,
         "org.freedesktop.Notifications",
         G_BUS_NAME_OWNER_FLAGS_NONE,
-        NULL, NULL, NULL, NULL, NULL);
+        (GBusAcquiredCallback)bus_acquired, /* bus_acquired_handler */
+        (GBusNameAcquiredCallback)name_acquired, /* name_acquired_handler */
+        (GBusNameLostCallback)name_lost, /* name_lost_handler */
+        NULL, /* user_data */
+        NULL); /* user_data_free_func */
 
-    printf("%s\n", introspection);
-    sleep(10);
+    /* Setup and start the loop */
+
+    main_loop = g_main_loop_new(NULL, FALSE);
+
+    g_main_loop_run(main_loop);
+    g_clear_pointer(&main_loop, g_main_loop_unref);
 
     g_clear_pointer(&introspection_data, g_dbus_node_info_unref);
     g_bus_unown_name(owned_name);
 
-    /* What now? */
 }
