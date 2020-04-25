@@ -17,22 +17,22 @@ const char *xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<node name=\"/org/freedesktop/Notifications\">\n"
     "   <interface name=\"org.freedesktop.Notifications\">\n"
     "       <method name=\"Notify\">\n"
-#ifdef RECEIVE_ACTIONS
+//#ifdef RECEIVE_ACTIONS
     "           <arg direction=\"in\" name=\"actions\" type=\"as\"/>\n"
-#endif
-#ifdef RECEIVE_APP_ICON
+/*#endif
+#ifdef RECEIVE_APP_ICON*/
     "           <arg direction=\"in\" name=\"app_icon\" type=\"s\"/>\n"
-#endif
+//#endif
     "           <arg direction=\"in\" name=\"app_name\" type=\"s\"/>\n"
     "           <arg direction=\"in\" name=\"body\" type=\"s\"/>\n"
-#ifdef RECEIVE_EXPIRE_TIMEOUT
+//#ifdef RECEIVE_EXPIRE_TIMEOUT
     "           <arg direction=\"in\" name=\"expire_timeout\" type=\"i\"/>\n"
-#endif
+//#endif
     "           <arg direction=\"in\" name=\"hint\" type=\"a{sv}\"/>\n"
     "           <arg direction=\"in\" name=\"id\" type=\"u\"/>\n"
-#ifdef RECEIVE_REPLACES_ID
+//#ifdef RECEIVE_REPLACES_ID
     "           <arg direction=\"in\" name=\"replaces_id\" type=\"u\"/>\n"
-#endif
+//#endif
     "           <arg direction=\"in\" name=\"summary\" type=\"s\"/>\n"
     "       </method>\n"
     "   </interface>\n"
