@@ -1,4 +1,4 @@
-#include "note.h"
+#include "tiramisu.h"
 #include "callbacks.h"
 
 void notification_received(GDBusConnection *connection, const gchar *sender,
