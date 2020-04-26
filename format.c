@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+#include "config.h"
 #include "format.h"
 
 void output_notification(gchar *app_name, guint32 replaces_id, gchar *app_icon,
