@@ -20,6 +20,23 @@ Anywhere a string may be found in a notification a new-line may be placed,
 but the most likely scenario is that a new-line is only found in the notification body,
 and because this is the most likely scenario, the body is output last in the notification.
 
+The structure for notifications being output by tiramisu is as follows.
+
+```
+$ tiramisu
+Application name
+Application icon path (if enabled in configuration)
+Notification actions (if enabled in configuration; not currently available)
+Notification hints (if enabled in configuration; not currently available)
+Replacement ID (if enabled in configuration)
+Notification timeout
+Summary
+Body
+```
+
+If any specific setting is disabled in the configuration, the line is omitted
+from the output (making all of the output one line shorter).
+
 # Configuration
 
 By default tiramisu opts out of outputting notification actions, replacement IDs,
