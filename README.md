@@ -4,7 +4,10 @@ tiramisu is a notification daemon based on dunst that outputs notifications
 to STDOUT in order to allow the user to process notifications any way they prefer.
 
 Perhaps you want notifications to be sent to your bar? tiramisu allows you to do that.
+
 Maybe you want notifications to be redirected to your phone as push notifications? A little bit of elbow grease and some tiramisu would let you do that ;)
+
+Notifications could be made more accessibility friendly even with TTS.
 
 <div align="center"><img src="https://github.com/Sweets/tiramisu/blob/master/example.gif"/></div>
 
