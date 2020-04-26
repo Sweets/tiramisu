@@ -9,11 +9,44 @@ void method_handler(GDBusConnection *connection, const gchar *sender,
     GVariant *return_value = NULL;
 
     if (!strcmp(method, "Notify")) {
-        // ?
+        GVariantIter iterator;
+
+        void *value;
+
+        g_variant_iter_init(&iterator, parameters);
+
+        gchar *app_name;
+        g_variant_iter_next(&iterator, "s", &app_name);
+
+        guint32 replaces_id;
+        g_variant_iter_next(&iterator, "u", &replaces_id);
+
+        gchar *app_icon;
+        g_variant_iter_next(&iterator, "s", &app_icon);
+
+        gchar *summary;
+        g_variant_iter_next(&iterator, "s", &summary);
+
+        gchar *body;
+        g_variant_iter_next(&iterator, "s", &body);
+
+        GVariant *actions;
+        g_variant_iter_next(&iterator, "as", &actions);
+
+        GVariant *hints;
+        g_variant_iter_next(&iterator, "a{sv}", &hints);
+
+        gint32 timeout;
+        g_variant_iter_next(&iterator, "i", &timeout);
+
+        print("%s %d %s %s %s actions,hints %d",
+            app_name, replaces_id, app_icon, summary, body, timeout);
+
+        return_value = g_variant_new("(u)", 0);
+        goto flush;
     }
 
     if (!strcmp(method, "GetServerInformation")) {
-        // ?
         return_value = g_variant_new("(ssss)",
             "tiramisu", "Sweets", "1.0", "1.2");
             goto flush;
