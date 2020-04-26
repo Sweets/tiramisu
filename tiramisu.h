@@ -12,3 +12,6 @@ extern GDBusConnection *dbus_connection;
 extern GDBusNodeInfo *introspection;
 
 #define print(...) fprintf(stderr, __VA_ARGS__);
+
+void output(gchar*, guint32, gchar*, gchar*, gchar*, GVariant*, GVariant*,
+    gint32);

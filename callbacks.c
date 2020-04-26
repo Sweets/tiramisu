@@ -11,8 +11,6 @@ void method_handler(GDBusConnection *connection, const gchar *sender,
     if (!strcmp(method, "Notify")) {
         GVariantIter iterator;
 
-        void *value;
-
         g_variant_iter_init(&iterator, parameters);
 
         gchar *app_name;
@@ -39,8 +37,8 @@ void method_handler(GDBusConnection *connection, const gchar *sender,
         gint32 timeout;
         g_variant_iter_next(&iterator, "i", &timeout);
 
-        print("%s %d %s %s %s actions,hints %d",
-            app_name, replaces_id, app_icon, summary, body, timeout);
+        output(app_name, replaces_id, app_icon, summary, body, actions, hints,
+            timeout);
 
         return_value = g_variant_new("(u)", 0);
         goto flush;

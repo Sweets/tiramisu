@@ -42,6 +42,42 @@ const char *xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "   </interface>\n"
     "</node>";
 
+void output(gchar *app_name, guint32 replaces_id, gchar *app_icon,
+    gchar *summary, gchar *body, GVariant *actions, GVariant *hints,
+    gint32 timeout) {
+
+    /* Build output and fucking send it */
+
+    char *out;
+
+    char *format = "%s"
+#ifdef RECEIVE_APP_ICON
+        "\n%s"
+#endif
+
+    /* TODO: actions */
+    /* TODO: hints */
+
+#ifdef RECEIVE_REPLACES_ID
+        "\n%lu"
+#endif
+        "\n%d\n%s\n%s";
+
+    asprintf(&out, format, app_name,
+#ifdef RECEIVE_APP_ICON
+        app_icon,
+#endif
+/* TODO: actions */
+/* TODO: hints */
+#ifdef RECEIVE_REPLACES_ID
+        replaces_id,
+#endif
+        timeout, summary, body);
+
+    printf("%s\n", out);
+
+}
+
 int main(int argc, char **argv) {
     GMainLoop *main_loop;
 
