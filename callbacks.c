@@ -1,5 +1,6 @@
 #include "tiramisu.h"
 #include "callbacks.h"
+#include "format.h"
 
 unsigned int notification_id = 0;
 
@@ -39,8 +40,8 @@ void method_handler(GDBusConnection *connection, const gchar *sender,
         gint32 timeout;
         g_variant_iter_next(&iterator, "i", &timeout);
 
-        output(app_name, replaces_id, app_icon, summary, body, actions, hints,
-            timeout);
+        output_notification(app_name, replaces_id, app_icon, summary, body,
+            actions, hints, timeout);
 
         return_value = g_variant_new("(u)", notification_id++);
         goto flush;
