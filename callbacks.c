@@ -61,13 +61,19 @@ flush:
     return;
 
 unhandled:
+#ifdef DEBUG
     print("Unhandled: %s %s\n", method, sender);
+#else
+    return;
+#endif
 
 }
 
 void bus_acquired(GDBusConnection *connection, const gchar *name,
     gpointer user_data) {
+#ifdef DEBUG
     print("%s\n", "Bus has been acquired.");
+#endif
 
     guint registered_object;
     registered_object = g_dbus_connection_register_object(connection,
@@ -78,14 +84,19 @@ void bus_acquired(GDBusConnection *connection, const gchar *name,
         NULL,
         NULL);
 
-    if (!registered_object)
+    if (!registered_object) {
+#ifdef DEBUG
         print("%s\n", "Unable to register.");
+#endif
+    }
 }
 
 void name_acquired(GDBusConnection *connection, const gchar *name,
     gpointer user_data) {
     dbus_connection = connection;
+#ifdef DEBUG
     print("%s\n", "Name has been acquired.");
+#endif
 }
 
 void name_lost(GDBusConnection *connection, const gchar *name,
@@ -97,7 +108,10 @@ void name_lost(GDBusConnection *connection, const gchar *name,
             "Unable to connect to acquire org.freedesktop.Notifications",
             "could not connect to dbus.");
         exit(1);
-    } else
+    }
+#ifdef DEBUG
+    else
         print("%s\n", "Successfully acquired org.freedesktop.Notifications");
+#endif
 
 }
