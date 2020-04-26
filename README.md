@@ -1,4 +1,4 @@
-# Notifications, the UNIX way
+# Desktop notifications, the UNIX way
 
 tiramisu is a notification daemon based on dunst that outputs notifications
 to STDOUT in order to allow the user to process notifications any way they prefer.
