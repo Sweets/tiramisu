@@ -95,6 +95,6 @@ void name_lost(GDBusConnection *connection, const gchar *name,
             "could not connect to dbus.");
         exit(1);
     } else
-        print("%s", "Successfully acquired org.freedesktop.Notifications");
+        print("%s\n", "Successfully acquired org.freedesktop.Notifications");
 
 }
