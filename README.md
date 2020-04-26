@@ -6,7 +6,11 @@ to STDOUT in order to allow the user to process notifications any way they prefe
 Perhaps you want notifications to be sent to your bar? tiramisu allows you to do that.
 Maybe you want notifications to be redirected to your phone as push notifications? A little bit of elbow grease and some tiramisu would let you do that ;)
 
+<div align="center">
 ![tiramisu](https://github.com/Sweets/tiramisu/blob/master/example.gif)
+  </div>
+
+Thanks to [BanchouBoo](https://github.com/BanchouBoo) for helping test tiramisu and providing the gif of it.
 
 # Usage
 
