@@ -16,25 +16,29 @@ GDBusNodeInfo *introspection = NULL;
 const char *xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<node name=\"/org/freedesktop/Notifications\">\n"
     "   <interface name=\"org.freedesktop.Notifications\">\n"
+
     "       <method name=\"Notify\">\n"
-//#ifdef RECEIVE_ACTIONS
-    "           <arg direction=\"in\" name=\"actions\" type=\"as\"/>\n"
-/*#endif
-#ifdef RECEIVE_APP_ICON*/
-    "           <arg direction=\"in\" name=\"app_icon\" type=\"s\"/>\n"
-//#endif
-    "           <arg direction=\"in\" name=\"app_name\" type=\"s\"/>\n"
-    "           <arg direction=\"in\" name=\"body\" type=\"s\"/>\n"
-//#ifdef RECEIVE_EXPIRE_TIMEOUT
-    "           <arg direction=\"in\" name=\"expire_timeout\" type=\"i\"/>\n"
-//#endif
-    "           <arg direction=\"in\" name=\"hint\" type=\"a{sv}\"/>\n"
-    "           <arg direction=\"in\" name=\"id\" type=\"u\"/>\n"
-//#ifdef RECEIVE_REPLACES_ID
-    "           <arg direction=\"in\" name=\"replaces_id\" type=\"u\"/>\n"
-//#endif
-    "           <arg direction=\"in\" name=\"summary\" type=\"s\"/>\n"
+    "            <arg direction=\"in\"  type=\"s\"     name=\"app_name\"/>\n"
+    "            <arg direction=\"in\"  type=\"u\"     name=\"replaces_id\"/>\n"
+    "            <arg direction=\"in\"  type=\"s\"     name=\"app_icon\"/>\n"
+    "            <arg direction=\"in\"  type=\"s\"     name=\"summary\"/>\n"
+    "            <arg direction=\"in\"  type=\"s\"     name=\"body\"/>\n"
+    "            <arg direction=\"in\"  type=\"as\"    name=\"actions\"/>\n"
+    "            <arg direction=\"in\"  type=\"a{sv}\" name=\"hints\"/>\n"
+    "            <arg direction=\"in\"  type=\"i\""
+    " name=\"expire_timeout\"/>\n"
+    "            <arg direction=\"out\" type=\"u\""
+    " name=\"id\"/>\n"
     "       </method>\n"
+
+
+    "        <method name=\"GetServerInformation\">\n"
+    "            <arg direction=\"out\" type=\"s\" name=\"name\"/>\n"
+    "            <arg direction=\"out\" type=\"s\" name=\"vendor\"/>\n"
+    "            <arg direction=\"out\" type=\"s\" name=\"version\"/>\n"
+    "            <arg direction=\"out\" type=\"s\" name=\"spec_version\"/>\n"
+    "        </method>\n"
+
     "   </interface>\n"
     "</node>";
 

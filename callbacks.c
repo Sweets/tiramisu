@@ -1,31 +1,33 @@
 #include "tiramisu.h"
 #include "callbacks.h"
 
-void notification_received(GDBusConnection *connection, const gchar *sender,
-    GVariant *parameters, GDBusMethodInvocation *invocation) {
-    //
-/*    GVariantIter iterator;
-    GVariant *value;
-    gchar *key;
-    GVariant *dictionary;
-
-    g_variant_iter_init(&iterator, dictionary);
-    while (g_variant_iter_loop(&iterator, "s", &key, &value)) {
-        g_print("Item '%s' has type '%s'\n", key,
-            g_variant_get_type_string(value));
-    }*/
-}
-
 void method_handler(GDBusConnection *connection, const gchar *sender,
     const gchar *object, const gchar *interface, const gchar *method,
     GVariant *parameters, GDBusMethodInvocation *invocation,
     gpointer user_data) {
 
+    GVariant *return_value = NULL;
+
     if (!strcmp(method, "Notify")) {
         // ?
     }
 
-    print("%s %s\n", method, sender);
+    if (!strcmp(method, "GetServerInformation")) {
+        // ?
+        return_value = g_variant_new("(ssss)",
+            "tiramisu", "Sweets", "1.0", "1.2");
+            goto flush;
+    }
+
+    goto unhandled;
+
+flush:
+    g_dbus_method_invocation_return_value(invocation, return_value);
+    g_dbus_connection_flush(connection, NULL, NULL, NULL);
+    return;
+
+unhandled:
+    print("Unhandled: %s %s\n", method, sender);
 
 }
 
@@ -35,8 +37,12 @@ void bus_acquired(GDBusConnection *connection, const gchar *name,
 
     guint registered_object;
     registered_object = g_dbus_connection_register_object(connection,
-        "/org/freedesktop/Notifications", introspection->interfaces[0],
-        &(const GDBusInterfaceVTable){ method_handler }, NULL, NULL, NULL);
+        "/org/freedesktop/Notifications",
+        introspection->interfaces[0],
+        &(const GDBusInterfaceVTable){ method_handler },
+        NULL,
+        NULL,
+        NULL);
 
     if (!registered_object)
         print("%s\n", "Unable to register.");
