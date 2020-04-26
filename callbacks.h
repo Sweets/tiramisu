@@ -3,6 +3,8 @@
 #include <gio/gio.h>
 #include <glib.h>
 
+unsigned int notification_id;
+
 void method_handler(GDBusConnection*, const gchar*, const gchar*, const gchar*,
     const gchar*, GVariant*, GDBusMethodInvocation*, gpointer);
 
