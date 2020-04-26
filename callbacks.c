@@ -88,6 +88,7 @@ void bus_acquired(GDBusConnection *connection, const gchar *name,
 #ifdef DEBUG
         print("%s\n", "Unable to register.");
 #endif
+        stop_main_loop(NULL);
     }
 }
 
@@ -107,7 +108,7 @@ void name_lost(GDBusConnection *connection, const gchar *name,
         print("%s; %s\n",
             "Unable to connect to acquire org.freedesktop.Notifications",
             "could not connect to dbus.");
-        exit(1);
+        stop_main_loop(NULL);
     }
 #ifdef DEBUG
     else
