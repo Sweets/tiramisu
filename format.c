@@ -14,17 +14,18 @@ void output_notification(gchar *app_name, guint32 replaces_id, gchar *app_icon,
     strcat(string, app_name);
 
 #ifdef RECEIVE_APP_ICON
-    sprintf(string, "%s\n%s", string, app_icon);
+    sprintf(string, "%s%s%s", string, OUTPUT_DELIMITER, app_icon);
 #endif
 
     /* TODO: actions */
     /* TODO: hints */
 
 #ifdef RECEIVE_REPLACES_ID
-    sprintf(string, "%s\n%lu", string, replaces_id);
+    sprintf(string, "%s%s%lu", string, OUTPUT_DELIMITER, replaces_id);
 #endif
 
-    sprintf(string, "%s\n%d\n%s\n%s", string, timeout, summary, body);
+    sprintf(string, "%s%s%d%s%s%s%s", string, OUTPUT_DELIMITER,
+        timeout, OUTPUT_DELIMITER, summary, OUTPUT_DELIMITER, body);
 
     printf("%s\n", string);
     fflush(stdout);

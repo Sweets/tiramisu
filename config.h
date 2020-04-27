@@ -1,4 +1,6 @@
+#define DEBUG
 // #define RECEIVE_ACTIONS
 // #define RECEIVE_APP_ICON
 // #define RECEIVE_REPLACES_ID
 // #define RECEIVE_EXPIRE_TIMEOUT
+#define OUTPUT_DELIMITER ","
