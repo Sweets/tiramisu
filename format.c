@@ -11,6 +11,7 @@ void output_notification(gchar *app_name, guint32 replaces_id, gchar *app_icon,
     /* 2048 characters should be significantly long enough*/
     char *string = (char *)calloc(2048, sizeof(char));
 
+#ifndef PRINT_JSON
     strcat(string, app_name);
 
 #ifdef RECEIVE_APP_ICON
@@ -26,6 +27,20 @@ void output_notification(gchar *app_name, guint32 replaces_id, gchar *app_icon,
 
     sprintf(string, "%s%s%d%s%s%s%s", string, OUTPUT_DELIMITER,
         timeout, OUTPUT_DELIMITER, summary, OUTPUT_DELIMITER, body);
+#else
+    sprintf(string, "{ \"app_name\": \"%s\"", app_name);
+
+#ifdef RECEIVE_APP_ICON
+    sprintf(string, "%s, \"app_icon\": \"%s\"", string, app_icon);
+#endif
+
+#ifdef RECEIVE_REPLACES_ID
+    sprintf(string, "%s, \"replaces_id\": %lu", string, replaces_id);
+#endif
+
+    sprintf(string, "%s, \"timeout\": %d, \"summary\": \"%s\", \"body\": \"%s\" }", string, timeout, summary, body);
+
+#endif
 
     printf("%s\n", string);
     fflush(stdout);
