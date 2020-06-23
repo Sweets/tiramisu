@@ -3,7 +3,7 @@
 #include "config.h"
 #include "format.h"
 
-void escape_quotes(char *str, char *out) {
+char* escape_quotes(char *str, char *out) {
     memset(out, 0, strlen(out));
     while (*str) {
         if (*str == '"')
@@ -12,6 +12,8 @@ void escape_quotes(char *str, char *out) {
             out[strlen(out)] = *str;
         str++;
     }
+
+    return out;
 }
 
 void output_notification(gchar *app_name, guint32 replaces_id, gchar *app_icon,
@@ -40,23 +42,23 @@ void output_notification(gchar *app_name, guint32 replaces_id, gchar *app_icon,
         timeout, OUTPUT_DELIMITER, summary, OUTPUT_DELIMITER, body);
 #else
     char *escaped_str = (char *)calloc(512, sizeof(char));
-    escape_quotes(app_name, escaped_str);
-    sprintf(string, "{ \"app_name\": \"%s\"", escaped_str);
+
+    sprintf(string, "{ \"app_name\": \"%s\"", escape_quotes(app_name, escaped_str));
 
 #ifdef RECEIVE_APP_ICON
-    escape_quotes(app_icon, escaped_str);
-    sprintf(string, "%s, \"app_icon\": \"%s\"", string, escaped_str);
+    sprintf(string, "%s, \"app_icon\": \"%s\"", string, escape_quotes(app_icon, escaped_str));
 #endif
+
+    /* TODO: actions */
+    /* TODO: hints */
 
 #ifdef RECEIVE_REPLACES_ID
     sprintf(string, "%s, \"replaces_id\": %lu", string, replaces_id);
 #endif
 
-    escape_quotes(summary, escaped_str);
-    sprintf(string, "%s, \"timeout\": %d, \"summary\": \"%s\"", string, timeout, escaped_str);
+    sprintf(string, "%s, \"timeout\": %d, \"summary\": \"%s\"", string, timeout, escape_quotes(summary, escaped_str));
 
-    escape_quotes(body, escaped_str);
-    sprintf(string, "%s, \"body\": \"%s\" }", string, escaped_str);
+    sprintf(string, "%s, \"body\": \"%s\" }", string, escape_quotes(body, escaped_str));
 
 #endif
 
