@@ -41,6 +41,8 @@ Summary
 Body
 ```
 
+also tiramisu can output information in json so it can be easily parsed.
+
 If any specific setting is disabled in the configuration, the line is omitted
 from the output (making all of the output one line shorter).
 

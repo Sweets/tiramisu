@@ -2,4 +2,5 @@
 // #define RECEIVE_APP_ICON
 // #define RECEIVE_REPLACES_ID
 // #define RECEIVE_EXPIRE_TIMEOUT
+#define PRINT_JSON
 #define OUTPUT_DELIMITER "\n"
