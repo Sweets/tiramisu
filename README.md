@@ -46,6 +46,8 @@ also tiramisu can output information in json so it can be easily parsed.
 If any specific setting is disabled in the configuration, the line is omitted
 from the output (making all of the output one line shorter).
 
+##### Note that only a single process can claim the org.freedesktop.Notifications name at a given time, so any other running notification daemon must be killed before running tiramisu.
+
 # Configuration
 
 By default tiramisu opts out of outputting notification actions, replacement IDs,
