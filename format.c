@@ -44,6 +44,7 @@ void output_notification(gchar *app_name, guint32 replaces_id, gchar *app_icon,
     char *escaped_str = (char *)calloc(512, sizeof(char));
 
     sprintf(string, "{ \"app_name\": \"%s\"", escape_quotes(app_name, escaped_str));
+    free(escaped_str);
 
 #ifdef RECEIVE_APP_ICON
     sprintf(string, "%s, \"app_icon\": \"%s\"", string, escape_quotes(app_icon, escaped_str));
@@ -59,12 +60,10 @@ void output_notification(gchar *app_name, guint32 replaces_id, gchar *app_icon,
     sprintf(string, "%s, \"timeout\": %d, \"summary\": \"%s\"", string, timeout, escape_quotes(summary, escaped_str));
 
     sprintf(string, "%s, \"body\": \"%s\" }", string, escape_quotes(body, escaped_str));
-
 #endif
 
     printf("%s\n", string);
     fflush(stdout);
 
     free(string);
-    free(escaped_str);
 }
