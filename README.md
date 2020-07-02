@@ -13,6 +13,10 @@ Notifications could be made more accessibility friendly even with TTS.
 
 Thanks to [BanchouBoo](https://github.com/BanchouBoo) for helping test tiramisu and providing the gif of it.
 
+# Projects Using tiramisu
+
+- [polynotifications by alnj](https://github.com/alnj/polynotifications)
+
 # Usage
 
 Redirecting output of tiramisu to the input of another program is the ideal methodology to using
@@ -22,23 +26,11 @@ tiramisu.
 tiramisu | your-application
 ```
 
-tiramisu outputs a new line for every relevant bit of information regarding a notification.
-Anywhere a string may be found in a notification a new-line may be placed,
-but the most likely scenario is that a new-line is only found in the notification body,
-and because this is the most likely scenario, the body is output last in the notification.
-
-The structure for notifications being output by tiramisu is as follows.
+By default tiramisu outputs notifications in JSON format. By removing the `PRINT_JSON` macro from config.h you can have tiramisu print out notifications straight to STDOUT, with each bit of information being split by a new line (the delimiter can also be changed in config.h)
 
 ```
 $ tiramisu
-Application name
-Application icon path (if enabled in configuration)
-Notification actions (if enabled in configuration; not currently available)
-Notification hints (if enabled in configuration; not currently available)
-Replacement ID (if enabled in configuration)
-Notification timeout
-Summary
-Body
+{ "app_name": "notify-send", "app_icon": "", "replaces_id": 0, "timeout": -1, "summary": "Notification summary", "body": "Notification body" }
 ```
 
 also tiramisu can output information in json so it can be easily parsed.
@@ -48,11 +40,3 @@ from the output (making all of the output one line shorter).
 
 #### Note that only a single process can claim the org.freedesktop.Notifications name at a given time, so any other running notification daemon must be killed before running tiramisu.
 
-# Configuration
-
-By default tiramisu opts out of outputting notification actions, replacement IDs,
-notification timeouts, and hints. These can be enabled by modifying `config.h`
-and uncommenting the needed functionality and recompiling tiramisu.
-
-Arrays are same-line, comma-separated. Associative arrays (dictionaries) are the same,
-except their keys prefix the values and are separated by a colon.
