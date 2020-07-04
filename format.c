@@ -23,6 +23,13 @@ void output_notification(gchar *app_name, guint32 replaces_id, gchar *app_icon,
 
     char *escaped_string = (char *)calloc(512, sizeof(char));
 
+#ifdef PRINT_JSON
+
+    printf("{ \"app_name\": \"%s\",", escape_quotes(app_name, escaped_string));
+    printf(" \"app_icon\": \"%s\",", escape_quotes(app_icon, escaped_string));
+    printf(" \"replaces_id\": %u, \"timeout\": %d,", replaces_id, timeout);
+    printf(" \"hints\": { ");
+
     const char *int_format = ", \"%s\": %d";
     const char *uint_format = ", \"%s\": %u";
 
@@ -62,11 +69,7 @@ void output_notification(gchar *app_name, guint32 replaces_id, gchar *app_icon,
 
     }
 
-#ifdef PRINT_JSON
-
-    printf("{ \"app_name\": \"%s\",", escape_quotes(app_name, escaped_string));
-    printf(" \"app_icon\": \"%s\",", escape_quotes(app_icon, escaped_string));
-    printf(" \"replaces_id\": %u, \"timeout\": %d,", replaces_id, timeout);
+    printf(" },");
     printf(" \"summary\": \"%s\",", escape_quotes(summary, escaped_string));
     printf(" \"body\": \"%s\" }\n", escape_quotes(body, escaped_string));
 
