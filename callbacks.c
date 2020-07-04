@@ -31,7 +31,7 @@ void method_handler(GDBusConnection *connection, const gchar *sender,
         gchar *body;
         g_variant_iter_next(&iterator, "s", &body);
 
-        GVariant *actions;
+        GVariant **actions;
         g_variant_iter_next(&iterator, "as", &actions);
 
         GVariant *hints;

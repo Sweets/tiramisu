@@ -18,10 +18,18 @@ char* escape_quotes(char *str, char *out) {
 }
 
 void output_notification(gchar *app_name, guint32 replaces_id, gchar *app_icon,
-    gchar *summary, gchar *body, GVariant *actions, GVariant *hints,
+    gchar *summary, gchar *body, GVariant **actions, GVariant *hints,
     gint32 timeout) {
 
     char *escaped_string = (char *)calloc(512, sizeof(char));
+
+    gsize index = 0;
+    while (actions[index] && actions[index + 1]) {
+        g_print(", \"%s\": \"%s\"", g_variant_dup_string(actions[index], NULL),
+            g_variant_dup_string(actions[index++], NULL));
+        index++;
+    }
+
 
 #ifdef PRINT_JSON
 
