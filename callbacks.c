@@ -35,7 +35,7 @@ void method_handler(GDBusConnection *connection, const gchar *sender,
         g_variant_iter_next(&iterator, "as", &actions);
 
         GVariant *hints;
-        g_variant_iter_next(&iterator, "a{sv}", &hints);
+        g_variant_iter_next(&iterator, "@a{s*}", &hints);
 
         gint32 timeout;
         g_variant_iter_next(&iterator, "i", &timeout);
