@@ -119,7 +119,7 @@ output:
         index++;
     }
 
-    printf("%s: %s\n%s: %s",
+    printf("%s: %s\n%s: %s\n",
             "summary", sanitize(summary, sanitized),
             "body", sanitize(body, sanitized));
 
