@@ -1,17 +1,17 @@
 
 TARGET	=	tiramisu
-SRC		:=	tiramisu.c callbacks.c format.c
+SRC		:=	tiramisu.c callbacks.c
 
 PREFIX ?=	/usr/local
 
-CFLAGS	=	-Wall
+CFLAGS	=	-Wall -Wno-unused-value
 IFLAGS  =	$(shell pkg-config --cflags glib-2.0 gio-2.0)
 LFLAGS	=	$(shell pkg-config --libs glib-2.0 gio-2.0)
 
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
-	$(CC) $(CFLAGS) $(LDFLAGS) $(IFLAGS) $(SRC) $(LFLAGS) -o $(TARGET)
+	$(CC) $(CFLAGS) $(IFLAGS) $(SRC) $(LFLAGS) -o $(TARGET)
 
 install: $(TARGET)
 	mkdir -p $(DESTDIR)$(PREFIX)/bin

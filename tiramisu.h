@@ -12,6 +12,10 @@ extern GDBusConnection *dbus_connection;
 extern GDBusNodeInfo *introspection;
 extern GMainLoop *main_loop;
 
+#ifdef DEBUG
 #define print(...) fprintf(stderr, __VA_ARGS__);
+#else
+#define print(...) (void)(__VA_ARGS__);
+#endif
 
 gboolean stop_main_loop(gpointer);
