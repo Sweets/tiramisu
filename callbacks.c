@@ -63,7 +63,7 @@ output:
 
     char *sanitized = (char *)calloc(512, sizeof(char));
 
-    printf("%s: %s\n%s: %s",
+    printf("%s: %s\n%s: %s\n",
         "app_name", sanitize(app_name, sanitized),
         "app_icon", sanitize(app_icon, sanitized));
     printf("%s: %u\n%s: %d\n",
