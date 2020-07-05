@@ -11,7 +11,7 @@ LFLAGS	=	$(shell pkg-config --libs glib-2.0 gio-2.0)
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
-	$(CC) $(CFLAGS) $(IFLAGS) $(SRC) $(LFLAGS) -o $(TARGET)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(IFLAGS) $(SRC) $(LFLAGS) -o $(TARGET)
 
 install: $(TARGET)
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
