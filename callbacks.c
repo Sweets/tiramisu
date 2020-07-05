@@ -114,9 +114,9 @@ output:
 
     printf("%s\n", "actions");
 
-    while (actions[index + 1]) {
-        printf("\t%s = '%s'\n", actions[index], actions[++index]);
-        index++;
+    while (actions[index] && actions[index + 1]) {
+        printf("\t%s = %s\n", actions[index], actions[index + 1]);
+        index += 2;
     }
 
     printf("%s: %s\n%s: %s\n",
