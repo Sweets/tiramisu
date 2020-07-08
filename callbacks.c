@@ -63,34 +63,58 @@ output:
 
     char *sanitized = (char *)calloc(512, sizeof(char));
 
-    printf("\"%s\": \"%s\", \"%s\": \"%s\", ",
-        "app_name", sanitize(app_name, sanitized),
-        "app_icon", sanitize(app_icon, sanitized));
-    printf("\"%s\": \"%u\", \"%s\": \"%d\", ",
-        "replaces_id", replaces_id,
-        "timeout", timeout);
+    printf(
+#ifdef PRINT_JSON
+        "{ \"app_name\": \"%s\", \"app_icon\": \"%s\", ",
+#else
+        "app_name: %s\napp_icon: %s\n",
+#endif
+        sanitize(app_name, sanitized),
+        sanitize(app_icon, sanitized));
+    printf(
+#ifdef PRINT_JSON
+        "\"replaces_id\": \"%u\", \"timeout\": \"%d\", ",
+#else
+        "replaces_id: %u\ntimeout: %d\n",
+#endif
+        replaces_id, timeout);
 
-    printf("\"%s\": { ", "hints");
+#ifdef PRINT_JSON
+    printf("\"hints\": { ");
+#else
+    printf("hints: ");
+#endif
 
     gchar *key;
     GVariant *value;
 
+#ifdef PRINT_JSON
     const char *int_format = "\"%s\": %d";
     const char *uint_format = "\"%s\": %u";
-    char *delimiter = "";
+#else
+    const char *int_format = "\t%s: %d\n";
+    const char *uint_format = "\t%s: %u\n";
+#endif
 
     unsigned int index = 0;
     g_variant_iter_init(&iterator, hints);
     while (g_variant_iter_loop(&iterator, "{sv}", &key, NULL)) {
 
+#ifdef PRINT_JSON
         if (index > 0)
             printf(", ");
+#endif
 
         /* There has to be a better way. glib, why? */
 
         if ((value = g_variant_lookup_value(hints, key, GT_STRING)))
-            printf("\"%s\": \"%s\"", key,
-                sanitize(g_variant_dup_string(value, NULL), sanitized));
+            printf(
+#ifdef PRINT_JSON
+                "\"%s\": \"%s\"",
+#else
+                "\t%s: %s\n",
+#endif
+                key, sanitize(g_variant_dup_string(value, NULL), sanitized));
         else if ((value = g_variant_lookup_value(hints, key, GT_INT16)))
             printf(int_format, key, g_variant_get_int16(value));
         else if ((value = g_variant_lookup_value(hints, key, GT_INT32)))
@@ -104,33 +128,61 @@ output:
         else if ((value = g_variant_lookup_value(hints, key, GT_UINT64)))
             printf(uint_format, key, g_variant_get_uint64(value));
         else if ((value = g_variant_lookup_value(hints, key, GT_DOUBLE)))
-            printf("\"%s\": %f", key, g_variant_get_double(value));
+            printf(
+#ifdef PRINT_JSON
+                "\"%s\": %f",
+#else
+                "\t%s: %f\n",
+#endif
+                key, g_variant_get_double(value));
         else if ((value = g_variant_lookup_value(hints, key, GT_BYTE)))
-            printf("\"%s\": %x", key, g_variant_get_byte(value));
-        else if ((value = g_variant_lookup_value(hints, key, GT_BOOL))) {
-            if (g_variant_get_boolean(value))
-                printf("\"%s\": 1", key);
-            else
-                printf("\"%s\": 0", key);
-        }
+            printf(
+#ifdef PRINT_JSON
+                "\"%s\": %x",
+#else
+                "\t%s: %x\n",
+#endif
+                key, g_variant_get_byte(value));
+        else if ((value = g_variant_lookup_value(hints, key, GT_BOOL)))
+            printf(
+#ifdef PRINT_JSON
+                "\"%s\": %d",
+#else
+                "\t%s: %d\n",
+#endif
+                key, g_variant_get_boolean(value));
 
         index++;
 
     }
 
     index = 0;
-    printf("}, \"%s\": {", "actions");
+#ifdef PRINT_JSON
+    printf("}, \"actions\": {");
+#else
+    printf("actions: ");
+#endif
 
     while (actions[index] && actions[index + 1]) {
+#ifdef PRINT_JSON
         if (index > 0)
             printf(", ");
-        printf("\"%s\": \"%s\"", actions[index + 1], actions[index]);
+        printf("\"%s\": \"%s\"",
+#else
+        printf("\t%s: %s\n",
+#endif
+            actions[index + 1], actions[index]);
         index += 2;
     }
 
-    printf("}, \"%s\": \"%s\", \"%s\": \"%s\" }",
-            "summary", sanitize(summary, sanitized),
-            "body", sanitize(body, sanitized));
+    printf(
+#ifdef PRINT_JSON
+        "}, \"summary\": \"%s\", \"body\": \"%s\" }\n",
+#else
+        "summary: %s\nbody: %s\n",
+#endif
+        sanitize(summary, sanitized),
+        sanitize(body, sanitized));
 
     return_value = g_variant_new("(u)", notification_id);
 
