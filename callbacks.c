@@ -63,29 +63,33 @@ output:
 
     char *sanitized = (char *)calloc(512, sizeof(char));
 
-    printf("%s: %s\n%s: %s\n",
+    printf("\"%s\": \"%s\", \"%s\": \"%s\", ",
         "app_name", sanitize(app_name, sanitized),
         "app_icon", sanitize(app_icon, sanitized));
-    printf("%s: %u\n%s: %d\n",
+    printf("\"%s\": \"%u\", \"%s\": \"%d\", ",
         "replaces_id", replaces_id,
         "timeout", timeout);
-    printf("%s\n", "hints");
+
+    printf("\"%s\": { ", "hints");
 
     gchar *key;
     GVariant *value;
 
-    const char *int_format = "\t%s: %d\n";
-    const char *uint_format = "\t%s: %u\n";
+    const char *int_format = "\"%s\": %d";
+    const char *uint_format = "\"%s\": %u";
+    char *delimiter = "";
 
     unsigned int index = 0;
-
     g_variant_iter_init(&iterator, hints);
     while (g_variant_iter_loop(&iterator, "{sv}", &key, NULL)) {
+
+        if (index > 0)
+            printf(", ");
 
         /* There has to be a better way. glib, why? */
 
         if ((value = g_variant_lookup_value(hints, key, GT_STRING)))
-            printf("\t%s: %s\n", key,
+            printf("\"%s\": \"%s\"", key,
                 sanitize(g_variant_dup_string(value, NULL), sanitized));
         else if ((value = g_variant_lookup_value(hints, key, GT_INT16)))
             printf(int_format, key, g_variant_get_int16(value));
@@ -100,26 +104,31 @@ output:
         else if ((value = g_variant_lookup_value(hints, key, GT_UINT64)))
             printf(uint_format, key, g_variant_get_uint64(value));
         else if ((value = g_variant_lookup_value(hints, key, GT_DOUBLE)))
-            printf("\t%s: %f\n", key, g_variant_get_double(value));
+            printf("\"%s\": %f", key, g_variant_get_double(value));
         else if ((value = g_variant_lookup_value(hints, key, GT_BYTE)))
-            printf("\t%s: %x\n", key, g_variant_get_byte(value));
+            printf("\"%s\": %x", key, g_variant_get_byte(value));
         else if ((value = g_variant_lookup_value(hints, key, GT_BOOL))) {
             if (g_variant_get_boolean(value))
-                printf("\t%s: 1\n", key);
+                printf("\"%s\": 1", key);
             else
-                printf("\t%s: 0\n", key);
+                printf("\"%s\": 0", key);
         }
+
+        index++;
 
     }
 
-    printf("%s\n", "actions");
+    index = 0;
+    printf("}, \"%s\": {", "actions");
 
     while (actions[index] && actions[index + 1]) {
-        printf("\t%s = %s\n", actions[index], actions[index + 1]);
+        if (index > 0)
+            printf(", ");
+        printf("\"%s\": \"%s\"", actions[index + 1], actions[index]);
         index += 2;
     }
 
-    printf("%s: %s\n%s: %s\n",
+    printf("}, \"%s\": \"%s\", \"%s\": \"%s\" }",
             "summary", sanitize(summary, sanitized),
             "body", sanitize(body, sanitized));
 
