@@ -1,25 +1,10 @@
 #include <stdio.h>
+#include <glib.h>
 
 #include "tiramisu.h"
 #include "callbacks.h"
 
 unsigned int notification_id = 0;
-
-char *sanitize(char *string, char *out) {
-    memset(out, 0, strlen(out));
-
-    while (*string) {
-        if (*string == '"')
-            strcat(out, "\\\"");
-        else if (*string == '\n')
-            strcat(out, "\\n");
-        else
-            out[strlen(out)] = *string;
-        string++;
-    }
-
-    return out;
-}
 
 void method_handler(GDBusConnection *connection, const gchar *sender,
     const gchar *object, const gchar *interface, const gchar *method,
@@ -61,16 +46,22 @@ output:
     g_variant_iter_next(&iterator, "@a{sv}", &hints);
     g_variant_iter_next(&iterator, "i", &timeout);
 
-    char *sanitized = (char *)calloc(512, sizeof(char));
-
+    char *app_name_sanitized = g_strescape(app_name, "");
+    char *app_icon_sanitized = g_strescape(app_icon, "");
     printf(
 #ifdef PRINT_JSON
         "{ \"app_name\": \"%s\", \"app_icon\": \"%s\", ",
 #else
         "app_name: %s\napp_icon: %s\n",
 #endif
-        sanitize(app_name, sanitized),
-        sanitize(app_icon, sanitized));
+        app_name_sanitized,
+        app_icon_sanitized);
+
+    free(app_name_sanitized);
+    free(app_icon_sanitized);
+    free(app_name);
+    free(app_icon);
+
     printf(
 #ifdef PRINT_JSON
         "\"replaces_id\": \"%u\", \"timeout\": \"%d\", ",
@@ -107,15 +98,17 @@ output:
 
         /* There has to be a better way. glib, why? */
 
-        if ((value = g_variant_lookup_value(hints, key, GT_STRING)))
+        if ((value = g_variant_lookup_value(hints, key, GT_STRING))) {
+            char *value_sanitized = g_strescape(g_variant_get_string(value, NULL), "");
             printf(
 #ifdef PRINT_JSON
                 "\"%s\": \"%s\"",
 #else
                 "\t%s: %s\n",
 #endif
-                key, sanitize(g_variant_dup_string(value, NULL), sanitized));
-        else if ((value = g_variant_lookup_value(hints, key, GT_INT16)))
+                key, value_sanitized);
+            free(value_sanitized);
+        } else if ((value = g_variant_lookup_value(hints, key, GT_INT16)))
             printf(int_format, key, g_variant_get_int16(value));
         else if ((value = g_variant_lookup_value(hints, key, GT_INT32)))
             printf(int_format, key, g_variant_get_int32(value));
@@ -153,8 +146,10 @@ output:
                 key, g_variant_get_boolean(value));
 
         index++;
-
+        g_variant_unref(value);
     }
+
+    g_variant_unref(hints);
 
     index = 0;
 #ifdef PRINT_JSON
@@ -174,20 +169,26 @@ output:
             actions[index + 1], actions[index]);
         index += 2;
     }
+    free(actions);
 
+    char *summary_sanitized = g_strescape(summary, "");
+    char *body_sanitized = g_strescape(body, "");
     printf(
 #ifdef PRINT_JSON
         "}, \"summary\": \"%s\", \"body\": \"%s\" }\n",
 #else
         "summary: %s\nbody: %s\n",
 #endif
-        sanitize(summary, sanitized),
-        sanitize(body, sanitized));
+        summary_sanitized,
+        body_sanitized);
+    free(summary_sanitized);
+    free(body_sanitized);
+    free(summary);
+    free(body);
 
     return_value = g_variant_new("(u)", notification_id);
 
     fflush(stdout);
-    free(sanitized);
 
     goto flush;
 
