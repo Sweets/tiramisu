@@ -16,7 +16,6 @@
 
 extern unsigned int notification_id;
 
-char *sanitize(char*, char*);
 void method_handler(GDBusConnection*, const gchar*, const gchar*, const gchar*,
     const gchar*, GVariant*, GDBusMethodInvocation*, gpointer);
 

@@ -6,6 +6,23 @@
 
 unsigned int notification_id = 0;
 
+char *sanitize(const char *string) {
+    /* allocating double the size of the original string should always be enough */
+    char *out = calloc(strlen(string) * 2 + 1, 1);
+
+    while (*string) {
+        if (*string == '"')
+            strcat(out, "\\\"");
+        else if (*string == '\n')
+            strcat(out, "\\n");
+        else
+            out[strlen(out)] = *string;
+        string++;
+    }
+
+    return out;
+}
+
 void method_handler(GDBusConnection *connection, const gchar *sender,
     const gchar *object, const gchar *interface, const gchar *method,
     GVariant *parameters, GDBusMethodInvocation *invocation,
@@ -46,8 +63,8 @@ output:
     g_variant_iter_next(&iterator, "@a{sv}", &hints);
     g_variant_iter_next(&iterator, "i", &timeout);
 
-    char *app_name_sanitized = g_strescape(app_name, "");
-    char *app_icon_sanitized = g_strescape(app_icon, "");
+    char *app_name_sanitized = sanitize(app_name);
+    char *app_icon_sanitized = sanitize(app_icon);
     printf(
 #ifdef PRINT_JSON
         "{ \"app_name\": \"%s\", \"app_icon\": \"%s\", ",
@@ -99,7 +116,7 @@ output:
         /* There has to be a better way. glib, why? */
 
         if ((value = g_variant_lookup_value(hints, key, GT_STRING))) {
-            char *value_sanitized = g_strescape(g_variant_get_string(value, NULL), "");
+            char *value_sanitized = sanitize(g_variant_get_string(value, NULL));
             printf(
 #ifdef PRINT_JSON
                 "\"%s\": \"%s\"",
@@ -171,8 +188,8 @@ output:
     }
     free(actions);
 
-    char *summary_sanitized = g_strescape(summary, "");
-    char *body_sanitized = g_strescape(body, "");
+    char *summary_sanitized = sanitize(summary);
+    char *body_sanitized = sanitize(body);
     printf(
 #ifdef PRINT_JSON
         "}, \"summary\": \"%s\", \"body\": \"%s\" }\n",
