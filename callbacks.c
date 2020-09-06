@@ -90,7 +90,7 @@ output:
 #ifdef PRINT_JSON
     printf("\"hints\": { ");
 #else
-    printf("hints: ");
+    printf("hints:\n");
 #endif
 
     gchar *key;
@@ -172,7 +172,7 @@ output:
 #ifdef PRINT_JSON
     printf("}, \"actions\": {");
 #else
-    printf("actions: ");
+    printf("actions:\n");
 #endif
 
     while (actions[index] && actions[index + 1]) {
