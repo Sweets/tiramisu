@@ -14,11 +14,12 @@
 #define GT_BOOL G_VARIANT_TYPE_BOOLEAN
 #define GT_BYTE G_VARIANT_TYPE_BYTE
 
-extern unsigned int notification_id;
+char *sanitize(const char*);
 
-void method_handler(GDBusConnection*, const gchar*, const gchar*, const gchar*,
-    const gchar*, GVariant*, GDBusMethodInvocation*, gpointer);
-
-void bus_acquired(GDBusConnection*, const gchar*, gpointer);
-void name_acquired(GDBusConnection*, const gchar*, gpointer);
-void name_lost(GDBusConnection*, const gchar*, gpointer);
+void output_notification(GVariant*);
+void hints_output_iterator(GVariant*, const char*, const char*, const char*,
+    const char*, const char*, const char*);
+void default_output(gchar*, gchar*, guint32, gint32, GVariant*, gchar**, gchar*,
+    gchar*);
+void json_output(gchar*, gchar*, guint32, gint32, GVariant*, gchar**, gchar*,
+    gchar*);

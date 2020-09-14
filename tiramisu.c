@@ -7,43 +7,13 @@
 #include <glib-unix.h>
 
 #include "tiramisu.h"
-#include "callbacks.h"
+#include "output.h"
 #include "config.h"
 
 GDBusConnection *dbus_connection = NULL;
 GDBusNodeInfo *introspection = NULL;
 GMainLoop *main_loop = NULL;
-
-/* Build introspection XML based on configuration */
-
-const char *xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-    "<node name=\"/org/freedesktop/Notifications\">\n"
-    "   <interface name=\"org.freedesktop.Notifications\">\n"
-
-    "       <method name=\"Notify\">\n"
-    "            <arg direction=\"in\"  type=\"s\"     name=\"app_name\"/>\n"
-    "            <arg direction=\"in\"  type=\"u\"     name=\"replaces_id\"/>\n"
-    "            <arg direction=\"in\"  type=\"s\"     name=\"app_icon\"/>\n"
-    "            <arg direction=\"in\"  type=\"s\"     name=\"summary\"/>\n"
-    "            <arg direction=\"in\"  type=\"s\"     name=\"body\"/>\n"
-    "            <arg direction=\"in\"  type=\"as\"    name=\"actions\"/>\n"
-    "            <arg direction=\"in\"  type=\"a{sv}\" name=\"hints\"/>\n"
-    "            <arg direction=\"in\"  type=\"i\""
-    " name=\"expire_timeout\"/>\n"
-    "            <arg direction=\"out\" type=\"u\""
-    " name=\"id\"/>\n"
-    "       </method>\n"
-
-
-    "        <method name=\"GetServerInformation\">\n"
-    "            <arg direction=\"out\" type=\"s\" name=\"name\"/>\n"
-    "            <arg direction=\"out\" type=\"s\" name=\"vendor\"/>\n"
-    "            <arg direction=\"out\" type=\"s\" name=\"version\"/>\n"
-    "            <arg direction=\"out\" type=\"s\" name=\"spec_version\"/>\n"
-    "        </method>\n"
-
-    "   </interface>\n"
-    "</node>";
+unsigned int notification_id = 0;
 
 gboolean stop_main_loop(gpointer user_data) {
     g_main_loop_quit(main_loop);
@@ -56,13 +26,13 @@ int main(int argc, char **argv) {
 
     /* Connect to DBUS */
 
-    introspection = g_dbus_node_info_new_for_xml(xml, NULL);
+    introspection = g_dbus_node_info_new_for_xml(INTROSPECTION_XML, NULL);
     owned_name = g_bus_own_name(G_BUS_TYPE_SESSION,
         "org.freedesktop.Notifications",
         G_BUS_NAME_OWNER_FLAGS_NONE,
-        (GBusAcquiredCallback)bus_acquired, /* bus_acquired_handler */
-        (GBusNameAcquiredCallback)name_acquired, /* name_acquired_handler */
-        (GBusNameLostCallback)name_lost, /* name_lost_handler */
+        (GBusAcquiredCallback)bus_acquired,
+        (GBusNameAcquiredCallback)name_acquired,
+        (GBusNameLostCallback)name_lost,
         NULL, /* user_data */
         NULL); /* user_data_free_func */
 
@@ -81,5 +51,60 @@ int main(int argc, char **argv) {
 
     g_clear_pointer(&introspection, g_dbus_node_info_unref);
     g_bus_unown_name(owned_name);
+
+}
+
+void bus_acquired(GDBusConnection *connection, const gchar *name,
+    gpointer user_data) {
+    print("%s\n", "Bus has been acquired.");
+
+    guint registered_object = g_dbus_connection_register_object(connection,
+        "/org/freedesktop/Notifications", introspection->interfaces[0],
+        &(const GDBusInterfaceVTable){ method_handler }, NULL, NULL, NULL);
+
+    if (!registered_object) {
+        print("%s\n", "Unable to register.");
+        stop_main_loop(NULL);
+    }
+}
+
+void name_acquired(GDBusConnection *connection, const gchar *name,
+    gpointer user_data) {
+    dbus_connection = connection;
+    print("%s\n", "Name has been acquired.");
+}
+
+void name_lost(GDBusConnection *connection, const gchar *name,
+    gpointer user_data) {
+    // we lost the Notifications daemon name or couldn't acquire it, shutdown
+
+    if (!connection) {
+        printf("%s; %s\n",
+            "Unable to connect to acquire org.freedesktop.Notifications",
+            "could not connect to dbus.");
+        stop_main_loop(NULL);
+    }
+    else
+        print("%s\n", "Successfully acquired org.freedesktop.Notifications");
+}
+
+void method_handler(GDBusConnection *connection, const gchar *sender,
+    const gchar *object, const gchar *interface, const gchar *label,
+    GVariant *parameters, GDBusMethodInvocation *invocation,
+    gpointer user_data) {
+
+    GVariant *return_value = NULL;
+
+    if (!strcmp(label, "GetServerInformation"))
+        return_value = g_variant_new("(ssss)",
+            "tiramisu", "Sweets", "1.0", "1.2");
+    else if (!strcmp(label, "Notify")) {
+        output_notification(parameters);
+        return_value = g_variant_new("(u)", ++notification_id);
+    } else
+        print("Unhandled: %s %s\n", label, sender);
+
+    g_dbus_method_invocation_return_value(invocation, return_value);
+    g_dbus_connection_flush(connection, NULL, NULL, NULL);
 
 }

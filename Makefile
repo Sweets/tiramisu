@@ -1,6 +1,6 @@
 
 TARGET	=	tiramisu
-SRC		:=	tiramisu.c callbacks.c
+SRC		:=	tiramisu.c output.c
 
 PREFIX ?=	/usr/local
 
