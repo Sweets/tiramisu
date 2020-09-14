@@ -47,8 +47,13 @@ void output_notification(GVariant *parameters) {
     char *summary_sanitized = sanitize(summary);
     char *body_sanitized = sanitize(body);
 
+    #ifdef PRINT_JSON
     json_output(app_name_sanitized, app_icon_sanitized, replaces_id, timeout,
         hints, actions, summary_sanitized, body_sanitized);
+    #else
+    default_output(app_icon_sanitized, app_icon_sanitized, replaces_id,
+        timeout, hints, actions, summary_sanitized, body_sanitized);
+    #endif
 
     free(app_name_sanitized);
     free(app_icon_sanitized);
