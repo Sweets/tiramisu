@@ -142,7 +142,7 @@ void default_output(gchar *app_name, gchar *app_icon, guint32 replaces_id,
         index += 2;
     }
 
-    printf("summary: %s\nbody: %s", summary, body);
+    printf("summary: %s\nbody: %s\n", summary, body);
 
 }
 
