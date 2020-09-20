@@ -133,12 +133,12 @@ void default_output(gchar *app_name, gchar *app_icon, guint32 replaces_id,
 
     printf("hints:%s", delimiter);
 
-    char *str_format    = NULL,
-        *int_format     = NULL,
-        *uint_format    = NULL,
-        *double_format  = NULL,
-        *boolean_format = NULL,
-        *byte_format    = NULL;
+    char *str_format    = calloc(64, sizeof(char)), // should be enough
+        *int_format     = calloc(64, sizeof(char)),
+        *uint_format    = calloc(64, sizeof(char)),
+        *double_format  = calloc(64, sizeof(char)),
+        *boolean_format = calloc(64, sizeof(char)),
+        *byte_format    = calloc(64, sizeof(char));
 
     sprintf(str_format,     "\t%%s: %%s%s", delimiter);
     sprintf(int_format,     "\t%%s: %%d%s", delimiter);
@@ -150,6 +150,14 @@ void default_output(gchar *app_name, gchar *app_icon, guint32 replaces_id,
     hints_output_iterator(hints,
         str_format, int_format, uint_format, double_format, boolean_format,
         byte_format);
+
+    free(str_format);
+    free(int_format);
+    free(uint_format);
+    free(double_format);
+    free(boolean_format);
+    free(byte_format);
+
     printf("actions:%s", delimiter);
 
     unsigned int index = 0;
