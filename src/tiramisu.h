@@ -6,13 +6,13 @@
 #include <gio/gio.h>
 #include <glib.h>
 
-#include "config.h"
-
 extern GDBusConnection *dbus_connection;
 extern GDBusNodeInfo *introspection;
 extern GMainLoop *main_loop;
 
 extern unsigned int notification_id;
+extern char print_json;
+extern char *delimiter;
 
 #ifdef DEBUG
 #define print(...) fprintf(stderr, __VA_ARGS__);

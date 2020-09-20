@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <signal.h>
+#include <unistd.h>
 
 #include <gio/gio.h>
 #include <glib.h>
@@ -8,12 +9,14 @@
 
 #include "tiramisu.h"
 #include "output.h"
-#include "config.h"
 
 GDBusConnection *dbus_connection = NULL;
 GDBusNodeInfo *introspection = NULL;
 GMainLoop *main_loop = NULL;
+
 unsigned int notification_id = 0;
+char print_json = 0;
+char *delimiter = "\n";
 
 gboolean stop_main_loop(gpointer user_data) {
     g_main_loop_quit(main_loop);
@@ -22,6 +25,30 @@ gboolean stop_main_loop(gpointer user_data) {
 }
 
 int main(int argc, char **argv) {
+    /* Parse arguments */
+
+    char argument;
+    while ((argument = getopt(argc, argv, "hjd:"))) {
+        switch (argument) {
+            case 'd':
+                delimiter = optarg;
+                break;
+            case 'h':
+                printf("%s\n",
+                    "tiramisu -[h|d|j]\n"
+                    "-h\tHelp dialog\n"
+                    "-d\tDelimeter for default output style.\n"
+                    "-j\tUse JSON output style\n");
+                return EXIT_SUCCESS;
+                break;
+            case 'j':
+                print_json = 1;
+                break;
+            default:
+                break;
+        }
+    }
+
     guint owned_name;
 
     /* Connect to DBUS */
@@ -52,6 +79,7 @@ int main(int argc, char **argv) {
     g_clear_pointer(&introspection, g_dbus_node_info_unref);
     g_bus_unown_name(owned_name);
 
+    return EXIT_SUCCESS;
 }
 
 void bus_acquired(GDBusConnection *connection, const gchar *name,
