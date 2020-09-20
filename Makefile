@@ -1,6 +1,6 @@
 
 TARGET	=	tiramisu
-SRC		:=	tiramisu.c output.c
+SRC		:=	src/tiramisu.c src/output.c
 
 PREFIX ?=	/usr/local
 
