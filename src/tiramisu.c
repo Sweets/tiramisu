@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
     /* Parse arguments */
 
     char argument;
-    while ((argument = getopt(argc, argv, "hjd:"))) {
+    while ((argument = getopt(argc, argv, "hjd:")) >= 0) {
         switch (argument) {
             case 'd':
                 delimiter = optarg;
