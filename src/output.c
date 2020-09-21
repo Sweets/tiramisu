@@ -51,7 +51,7 @@ void output_notification(GVariant *parameters) {
         json_output(app_name_sanitized, app_icon_sanitized, replaces_id,
             timeout, hints, actions, summary_sanitized, body_sanitized);
     else
-        default_output(app_icon_sanitized, app_icon_sanitized, replaces_id,
+        default_output(app_name_sanitized, app_icon_sanitized, replaces_id,
             timeout, hints, actions, summary_sanitized, body_sanitized);
 
     free(app_name_sanitized);
