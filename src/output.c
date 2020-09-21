@@ -72,7 +72,7 @@ void output_notification(GVariant *parameters) {
 void hints_output_iterator(GVariant *hints, const char *str_format,
     const char *int_format, const char *uint_format,
     const char *double_format, const char *boolean_format,
-    const char *byte_format) {
+    const char *byte_format, const char *element_delimiter) {
 
     GVariantIter iterator;
     gchar *key;
@@ -84,7 +84,7 @@ void hints_output_iterator(GVariant *hints, const char *str_format,
     g_variant_iter_init(&iterator, hints);
     while (g_variant_iter_loop(&iterator, "{sv}", &key, NULL)) {
         if (index)
-            printf(", ");
+            printf(element_delimiter);
 
         /* Strings */
         if ((value = g_variant_lookup_value(hints, key, GT_STRING))) {
@@ -149,7 +149,7 @@ void default_output(gchar *app_name, gchar *app_icon, guint32 replaces_id,
 
     hints_output_iterator(hints,
         str_format, int_format, uint_format, double_format, boolean_format,
-        byte_format);
+        byte_format, "");
 
     free(str_format);
     free(int_format);
@@ -184,7 +184,7 @@ void json_output(gchar *app_name, gchar *app_icon, guint32 replaces_id,
 
     printf("\"hints\": {");
     hints_output_iterator(hints, "\"%s\": \"%s\"", "\"%s\": %d", "\"%s\": %u",
-        "\"%s\": %f", "\"%s\": %x", "\"%s\": %d");
+        "\"%s\": %f", "\"%s\": %x", "\"%s\": %d", ", ");
     printf("}, \"actions\": {");
 
     unsigned int index = 0;
