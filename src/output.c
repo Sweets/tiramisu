@@ -115,6 +115,8 @@ void hints_output_iterator(GVariant *hints, const char *str_format,
         /* Booleans */
         else if ((value = g_variant_lookup_value(hints, key, GT_BOOL)))
             printf(boolean_format, key, g_variant_get_boolean(value));
+        else
+            continue;
 
         g_variant_unref(value);
         index++;
