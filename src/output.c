@@ -165,6 +165,7 @@ void default_output(gchar *app_name, gchar *app_icon, guint32 replaces_id,
     free(double_format);
     free(boolean_format);
     free(byte_format);
+    free(err_format);
 
     printf("actions:%s", delimiter);
 
