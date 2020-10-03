@@ -73,7 +73,7 @@ void hints_output_iterator(GVariant *hints, const char *str_format,
     const char *int_format, const char *uint_format,
     const char *double_format, const char *boolean_format,
     const char *byte_format, const char *err_format,
-	const char *element_delimiter) {
+    const char *element_delimiter) {
 
     GVariantIter iterator;
     gchar *key;
@@ -116,11 +116,11 @@ void hints_output_iterator(GVariant *hints, const char *str_format,
         else if ((value = g_variant_lookup_value(hints, key, GT_BOOL)))
             printf(boolean_format, key, g_variant_get_boolean(value));
         else {
-			// value is of unknown type
-			printf(err_format, key);
-			index++;
+            // value is of unknown type
+            printf(err_format, key);
+            index++;
             continue;
-		}
+        }
 
         g_variant_unref(value);
         index++;
