@@ -18,7 +18,7 @@ char *sanitize(const char*);
 
 void output_notification(GVariant*);
 void hints_output_iterator(GVariant*, const char*, const char*, const char*,
-    const char*, const char*, const char*, const char*);
+    const char*, const char*, const char*, const char*, const char*);
 void default_output(gchar*, gchar*, guint32, gint32, GVariant*, gchar**, gchar*,
     gchar*);
 void json_output(gchar*, gchar*, guint32, gint32, GVariant*, gchar**, gchar*,
