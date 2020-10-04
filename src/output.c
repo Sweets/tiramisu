@@ -72,7 +72,8 @@ void output_notification(GVariant *parameters) {
 void hints_output_iterator(GVariant *hints, const char *str_format,
     const char *int_format, const char *uint_format,
     const char *double_format, const char *boolean_format,
-    const char *byte_format, const char *element_delimiter) {
+    const char *byte_format, const char *err_format,
+    const char *element_delimiter) {
 
     GVariantIter iterator;
     gchar *key;
@@ -85,7 +86,6 @@ void hints_output_iterator(GVariant *hints, const char *str_format,
     while (g_variant_iter_loop(&iterator, "{sv}", &key, NULL)) {
         if (index)
             printf(element_delimiter);
-
         /* Strings */
         if ((value = g_variant_lookup_value(hints, key, GT_STRING))) {
             value_sanitized = sanitize(g_variant_get_string(value, NULL));
@@ -115,8 +115,12 @@ void hints_output_iterator(GVariant *hints, const char *str_format,
         /* Booleans */
         else if ((value = g_variant_lookup_value(hints, key, GT_BOOL)))
             printf(boolean_format, key, g_variant_get_boolean(value));
-        else
+        else {
+            // value is of unknown type
+            printf(err_format, key);
+            index++;
             continue;
+        }
 
         g_variant_unref(value);
         index++;
@@ -140,7 +144,8 @@ void default_output(gchar *app_name, gchar *app_icon, guint32 replaces_id,
         *uint_format    = calloc(64, sizeof(char)),
         *double_format  = calloc(64, sizeof(char)),
         *boolean_format = calloc(64, sizeof(char)),
-        *byte_format    = calloc(64, sizeof(char));
+        *byte_format    = calloc(64, sizeof(char)),
+        *err_format     = calloc(64, sizeof(char));
 
     sprintf(str_format,     "\t%%s: %%s%s", delimiter);
     sprintf(int_format,     "\t%%s: %%d%s", delimiter);
@@ -148,10 +153,11 @@ void default_output(gchar *app_name, gchar *app_icon, guint32 replaces_id,
     sprintf(double_format,  "\t%%s: %%f%s", delimiter);
     sprintf(boolean_format, "\t%%s: %%x%s", delimiter);
     sprintf(byte_format,    "\t%%s: %%d%s", delimiter);
+    sprintf(err_format,     "\t%%s:%s", delimiter);
 
     hints_output_iterator(hints,
         str_format, int_format, uint_format, double_format, boolean_format,
-        byte_format, "");
+        byte_format, err_format, "");
 
     free(str_format);
     free(int_format);
@@ -159,6 +165,7 @@ void default_output(gchar *app_name, gchar *app_icon, guint32 replaces_id,
     free(double_format);
     free(boolean_format);
     free(byte_format);
+    free(err_format);
 
     printf("actions:%s", delimiter);
 
@@ -186,7 +193,7 @@ void json_output(gchar *app_name, gchar *app_icon, guint32 replaces_id,
 
     printf("\"hints\": {");
     hints_output_iterator(hints, "\"%s\": \"%s\"", "\"%s\": %d", "\"%s\": %u",
-        "\"%s\": %f", "\"%s\": %x", "\"%s\": %d", ", ");
+        "\"%s\": %f", "\"%s\": %x", "\"%s\": %d", "\"%s\": \"\"", ", ");
     printf("}, \"actions\": {");
 
     unsigned int index = 0;
