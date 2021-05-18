@@ -1,6 +1,6 @@
 
 TARGET	=	tiramisu
-SRC		:=	src/tiramisu.c src/output.c
+SRC		:=	src/tiramisu.c src/events.c src/notification.c
 
 PREFIX ?=	/usr/local
 
@@ -10,7 +10,7 @@ LFLAGS	=	$(shell pkg-config --libs glib-2.0 gio-2.0)
 
 all: $(TARGET)
 
-$(TARGET): $(OBJ)
+$(TARGET): $(SRC)
 	$(CC) $(CFLAGS) $(IFLAGS) $(SRC) $(LFLAGS) $(LDFLAGS) -o $(TARGET)
 
 install: $(TARGET)
