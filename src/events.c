@@ -22,6 +22,8 @@ void event_handler(GDBusConnection *connection, const gchar *sender,
         builder = g_variant_builder_new(G_VARIANT_TYPE("as"));
 
         g_variant_builder_add(builder, "s", "body");
+        g_variant_builder_add(builder, "s", "actions");
+
         return_value = g_variant_new("(as)", builder);
 
     } else if (!strcmp(label, "Notify")) {
