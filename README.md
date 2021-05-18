@@ -18,6 +18,14 @@ make notifications more accessible with text-to-speech, and so much more.
 
 # installation
 
+### by package manager
+
+Nix users can install `nixos.tiramisu`
+
+Arch users with an AUR package manager can install `tiramisu-git`
+
+### from source
+
 Clone the repository and build the project. Then move tiramisu to a location that is specified in `$PATH`.
 
 ```
