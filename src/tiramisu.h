@@ -44,6 +44,13 @@ extern char *output_format;
     "   </interface>\n"\
     "</node>"
 
-#define DEFAULT_OUTPUT_FORMAT "#source\n#body"
+#define DEFAULT_OUTPUT_FORMAT "#source\n"
+    "#icon\n"
+    "#id\n"
+    "#summary\n"
+    "#body\n"
+    "#actions\n"
+    "#hints\n"
+    "#timeout\n"
 
 gboolean stop_main_loop(gpointer);
