@@ -62,6 +62,9 @@ static void strreplsub(char **_haystack, const char *needle, const char *replace
         ++replacements;
     }
 
+    if (!replacements)
+        return;
+
     char *output = calloc((strlen(haystack) -
         (replacements * substr_length) + (replacements * replacement_length)),
         sizeof(char));
