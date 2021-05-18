@@ -10,9 +10,7 @@ extern GDBusConnection *dbus_connection;
 extern GDBusNodeInfo *introspection;
 extern GMainLoop *main_loop;
 
-extern unsigned int notification_id;
-extern char print_json;
-extern char *delimiter;
+extern char *output_format;
 
 #ifdef DEBUG
 #define print(...) fprintf(stderr, __VA_ARGS__);
@@ -46,9 +44,6 @@ extern char *delimiter;
     "   </interface>\n"\
     "</node>"
 
+#define DEFAULT_OUTPUT_FORMAT "#source\n#body"
+
 gboolean stop_main_loop(gpointer);
-void bus_acquired(GDBusConnection*, const gchar*, gpointer);
-void name_acquired(GDBusConnection*, const gchar*, gpointer);
-void name_lost(GDBusConnection*, const gchar*, gpointer);
-void method_handler(GDBusConnection*, const gchar*, const gchar*, const gchar*,
-    const gchar*, GVariant*, GDBusMethodInvocation*, gpointer);
