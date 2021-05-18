@@ -22,7 +22,7 @@ void hydrate_notification(notification_t *notification, GVariant *parameters) {
     g_variant_iter_next(&iterator, "i",      &notification->timeout);
 }
 
-void interpolate_output_string(char *format_string, notification_t notification) {
+void interpolate_output_string(char **format_string, notification_t notification) {
     /*
      * Interpolation
      * #source  => Discord
@@ -38,16 +38,16 @@ void interpolate_output_string(char *format_string, notification_t notification)
     char itoa_buffer[11]; // itoa() isn't standard, so sprintf.
     sprintf(itoa_buffer, "%i", notification.id);
 
-    strreplsub(&format_string, "#source",  notification.source);
-    strreplsub(&format_string, "#id",      itoa_buffer);
-    strreplsub(&format_string, "#icon",    notification.icon);
-    strreplsub(&format_string, "#summary", notification.summary);
-    strreplsub(&format_string, "#body",    notification.body);
+    strreplsub(format_string, "#source",  notification.source);
+    strreplsub(format_string, "#id",      itoa_buffer);
+    strreplsub(format_string, "#icon",    notification.icon);
+    strreplsub(format_string, "#summary", notification.summary);
+    strreplsub(format_string, "#body",    notification.body);
     // TODO: actions
     // TODO: hints
 
     sprintf(itoa_buffer, "%i", notification.timeout);
-    strreplsub(&format_string, "#timeout", itoa_buffer);
+    strreplsub(format_string, "#timeout", itoa_buffer);
 }
 
 static void strreplsub(char **_haystack, const char *needle, const char *replacement) {

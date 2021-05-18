@@ -16,4 +16,4 @@ typedef struct {
 } notification_t;
 
 void hydrate_notification(notification_t*, GVariant*);
-void interpolate_output_string(char*, notification_t);
+void interpolate_output_string(char**, notification_t);
