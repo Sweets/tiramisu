@@ -30,7 +30,7 @@ void event_handler(GDBusConnection *connection, const gchar *sender,
         hydrate_notification(&notification, parameters);
 
         char *output = strdup(output_format);
-        interpolate_output_string(output, notification);
+        interpolate_output_string(&output, notification);
         printf("%s\n", output);
         fflush(stdout);
 
