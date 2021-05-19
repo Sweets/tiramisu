@@ -16,7 +16,12 @@ void event_handler(GDBusConnection *connection, const gchar *sender,
 
     if (!strcmp(label, "GetServerInformation"))
         return_value = g_variant_new("(ssss)", "tiramisu", "Sweets", "1.1", "1.2");
-    else if (!strcmp(label, "GetCapabilities")) {
+    else if (!strcmp(label, "NotificationClosed")) {
+        // id
+        // reason
+    } else if (!strcmp(label, "CloseNotification")) {
+        // id
+    } else if (!strcmp(label, "GetCapabilities")) {
 
         GVariantBuilder *builder;
         builder = g_variant_builder_new(G_VARIANT_TYPE("as"));
@@ -37,6 +42,15 @@ void event_handler(GDBusConnection *connection, const gchar *sender,
         fflush(stdout);
 
         return_value = g_variant_new("(u)", ++id);
+    } else if (!strcmp(label, "ActionInvoked")) {
+        // id
+        // action key
+        /* Implementation idea:
+         * Passing anything to STDIN for another tiramisu call will have that process find the actual running daemon
+         * So that the message can be invoked and sent to dbus
+         *
+         * e.g. echo "Clicked" | tiramisu
+         */
     } else
         printf("Unhandled(%s, %s)", sender, label);
 
