@@ -6,6 +6,7 @@
 #include "notification.h"
 
 static void strreplsub(char **, const char*, const char*);
+static void strsanitize(char **);
 
 void hydrate_notification(notification_t *notification, GVariant *parameters) {
     GVariantIter iterator;
@@ -84,3 +85,8 @@ static void strreplsub(char **_haystack, const char *needle, const char *replace
     *_haystack = output;
 }
 
+static void strsanitize(char **_string) {
+    /* Sanitize output (-s flag) */
+    /* ' => \' */
+    /* " => \" */
+}

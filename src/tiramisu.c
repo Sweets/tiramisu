@@ -27,14 +27,17 @@ int main(int argc, char **argv) {
     /* Parse arguments */
 
     char argument;
-    while ((argument = getopt(argc, argv, "ho:")) >= 0) {
+    while ((argument = getopt(argc, argv, "hso:")) >= 0) {
         switch (argument) {
             case 'h':
                 printf("%s\n",
                     "tiramisu -[h|o]\n"
                     "-h\tHelp dialog\n"
+                    "-s\tSanitize output (for outputs that use quotes, e.g. JSON)\n"
                     "-o\tOutput formatting\n");
                 return EXIT_SUCCESS;
+                break;
+            case 's':
                 break;
             case 'o':
                 output_format = strdup(optarg);
