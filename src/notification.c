@@ -25,15 +25,8 @@ void hydrate_notification(notification_t *notification, GVariant *parameters) {
 
 void interpolate_output_string(char **format_string, notification_t notification) {
     /*
-     * Interpolation
-     * #source  => Discord
-     * #icon    => /path/to/icon
-     * #summary => This is a test
-     * #body    => ...you get the idea...
-     * #id      => 3
      * #actions => harder to interpolate, we'll come back to this
      * #hints   => harder to interpolate, we'll come back to this
-     * #timeout
      */
 
     char itoa_buffer[11]; // itoa() isn't standard, so sprintf.
@@ -63,6 +56,8 @@ static void strreplsub(char **_haystack, const char *needle, const char *replace
         ++replacements;
     }
 
+    free(ptr);
+
     if (!replacements)
         return;
 
@@ -74,6 +69,9 @@ static void strreplsub(char **_haystack, const char *needle, const char *replace
     char *post_ptr;
     int index = 0;
 
+    free(haystack);
+    ptr = pre_ptr;
+
     for (; index < replacements; index++) {
         post_ptr = strstr(pre_ptr, needle);
         strncat(output, pre_ptr, post_ptr - pre_ptr);
@@ -84,10 +82,34 @@ static void strreplsub(char **_haystack, const char *needle, const char *replace
     strncat(output, post_ptr + substr_length,
         (strlen(post_ptr) - substr_length) + replacement_length);
     *_haystack = output;
+
+    free(ptr);
 }
 
 static void strsanitize(char **_string) {
-    /* Sanitize output (-s flag) */
-    /* ' => \' */
-    /* " => \" */
+    char *string = *_string;
+
+    int index, quotes, output_index = 0;
+    char cell;
+
+    while ((cell = string[index++]))
+        if (cell == '"')
+            quotes++;
+
+    if (!quotes)
+        return;
+
+    index = 0;
+
+    char *output = calloc(strlen(string) + quotes + 1, sizeof(char));
+
+    while ((cell = string[index])) {
+        if (cell == '"')
+            output[output_index++] = '\\';
+
+        output[output_index++] = string[index++];
+    }
+
+    free(string);
+    *_string = output;
 }
