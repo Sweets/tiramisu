@@ -66,9 +66,9 @@ static void strreplsub(char **_haystack, const char *needle, const char *replace
     if (!replacements)
         return;
 
-    char *output = calloc((strlen(haystack) -
-        (replacements * substr_length) + (replacements * replacement_length)),
-        sizeof(char));
+    int output_size = (strlen(haystack) - (replacements * substr_length))
+        + (replacements * replacement_length) + 1;
+    char *output = calloc(output_size, sizeof(char));
 
     char *pre_ptr = strdup(haystack);
     char *post_ptr;
@@ -81,7 +81,8 @@ static void strreplsub(char **_haystack, const char *needle, const char *replace
         pre_ptr = post_ptr + substr_length;
     }
 
-    strncat(output, post_ptr + substr_length, strlen(post_ptr) - substr_length);
+    strncat(output, post_ptr + substr_length,
+        (strlen(post_ptr) - substr_length) + replacement_length);
     *_haystack = output;
 }
 
