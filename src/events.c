@@ -41,6 +41,8 @@ void event_handler(GDBusConnection *connection, const gchar *sender,
         printf("%s\n", output);
         fflush(stdout);
 
+        free(output);
+
         return_value = g_variant_new("(u)", ++id);
     } else if (!strcmp(label, "ActionInvoked")) {
         // id
