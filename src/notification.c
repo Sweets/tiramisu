@@ -93,7 +93,7 @@ static void create_csv_hint_string(GVariant *hints, char **string_ptr) {
 
             if (strlen(string) == 0) {
                 string = (char *)realloc(string,
-                    (strlen(str_val) + strlen(key) + 3);
+                    (strlen(str_val) + strlen(key) + 3));
 
                 snprintf(string,
                     (strlen(str_val) + strlen(key) + 3),
