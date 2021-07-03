@@ -104,13 +104,11 @@ static void create_csv_hint_string(GVariant *hints, char **string_ptr) {
                     (strlen(string) + strlen(str_val) + strlen(key)) + 3);
 
                 snprintf(string,
-                    strlen(str_val) + strlen(string) + strlen(key) + 2,
+                    strlen(str_val) + strlen(string) + strlen(key) + 3,
                     "%s,%s=%s", temp, key, str_val);
 
                 free(temp);
             }
-
-            free(str_val);
         } else {
             for (unsigned int index = 0; index < 9; index++) {
                 const void *gt_type = mapping_table[index][0];
