@@ -116,7 +116,7 @@ static void create_csv_hint_string(GVariant *hints, char **string_ptr) {
                         (strlen(string) + strlen(str_val) + strlen(key)) + 3);
 
                     snprintf(string,
-                        (strlen(string) + strlen(key) + strlen(str_val) + 2),
+                        (strlen(string) + strlen(key) + strlen(str_val) + 3),
                         "%s,%s=%s", temp, key, str_val);
 
                     free(str_val);
