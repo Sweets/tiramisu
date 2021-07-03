@@ -125,7 +125,8 @@ static void create_csv_hint_string(GVariant *hints, char **string_ptr) {
             }
         }
 
-        g_variant_unref(value);
+        if (value)
+            g_variant_unref(value);
     }
 
     g_variant_unref(hints);
