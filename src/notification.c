@@ -91,16 +91,26 @@ static void create_csv_hint_string(GVariant *hints, char **string_ptr) {
         if ((value = g_variant_lookup_value(hints, key, GT_STRING))) {
             str_val = (char *)g_variant_get_string(value, NULL);
 
-            temp = strdup(string);
-            string = (char *)realloc(string,
-                (strlen(string) + strlen(str_val) + strlen(key)) + 3);
+            if (strlen(string) == 0) {
+                string = (char *)realloc(string,
+                    (strlen(str_val) + strlen(key) + 3);
 
-            snprintf(string,
-                strlen(str_val) + strlen(string) + strlen(key) + 2, "%s,%s=%s",
-                temp, key, str_val);
+                snprintf(string,
+                    (strlen(str_val) + strlen(key) + 3),
+                    "%s=%s", key, str_val);
+            } else {
+                temp = strdup(string);
+                string = (char *)realloc(string,
+                    (strlen(string) + strlen(str_val) + strlen(key)) + 3);
+
+                snprintf(string,
+                    strlen(str_val) + strlen(string) + strlen(key) + 2,
+                    "%s,%s=%s", temp, key, str_val);
+
+                free(temp);
+            }
 
             free(str_val);
-            free(temp);
         } else {
             for (unsigned int index = 0; index < 9; index++) {
                 const void *gt_type = mapping_table[index][0];
@@ -111,16 +121,27 @@ static void create_csv_hint_string(GVariant *hints, char **string_ptr) {
                     str_val = calloc(11, sizeof(char));
                     sprintf(str_val, str_fmt, gt_method(value));
 
-                    temp = strdup(string);
-                    string = (char *)realloc(string,
-                        (strlen(string) + strlen(str_val) + strlen(key)) + 3);
+                    if (strlen(string) == 0) {
+                        string = (char *)realloc(string,
+                            (strlen(str_val) + strlen(key)) + 3);
+                        snprintf(string,
+                            (strlen(key) + strlen(str_val) + 3),
+                            "%s=%s", key, str_val);
+                    } else {
+                        temp = strdup(string);
+                        string = (char *)realloc(string,
+                            (strlen(string) + strlen(str_val) +
+                             strlen(key)) + 3);
 
-                    snprintf(string,
-                        (strlen(string) + strlen(key) + strlen(str_val) + 3),
-                        "%s,%s=%s", temp, key, str_val);
+                        snprintf(string,
+                            (strlen(string) + strlen(key) +
+                             strlen(str_val) + 3),
+                            "%s,%s=%s", temp, key, str_val);
+
+                        free(temp);
+                    }
 
                     free(str_val);
-                    free(temp);
                 }
             }
         }
