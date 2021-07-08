@@ -22,7 +22,7 @@ extern char *output_format;
     "<node name=\"/org/freedesktop/Notifications\">\n"\
     "   <interface name=\"org.freedesktop.Notifications\">\n"\
     "       <method name=\"Notify\">\n"\
-    "            <arg direction=\"in\"  type=\"s\"     name=\"app_name\"/>\n"\
+    "           <arg direction=\"in\"  type=\"s\"     name=\"app_name\"/>\n"\
     "            <arg direction=\"in\"  type=\"u\""\
     " name=\"replaces_id\"/>\n"\
     "            <arg direction=\"in\"  type=\"s\"     name=\"app_icon\"/>\n"\
@@ -35,12 +35,15 @@ extern char *output_format;
     "            <arg direction=\"out\" type=\"u\""\
     " name=\"id\"/>\n"\
     "       </method>\n"\
-    "        <method name=\"GetServerInformation\">\n"\
+    "       <method name=\"GetServerInformation\">\n"\
     "            <arg direction=\"out\" type=\"s\" name=\"name\"/>\n"\
     "            <arg direction=\"out\" type=\"s\" name=\"vendor\"/>\n"\
     "            <arg direction=\"out\" type=\"s\" name=\"version\"/>\n"\
     "            <arg direction=\"out\" type=\"s\" name=\"spec_version\"/>\n"\
-    "        </method>\n"\
+    "       </method>\n"\
+    "       <method name=\"GetCapabilities\">"\
+    "           <arg direction=\"out\" type=\"as\" name=\"capabilities\"/>"\
+    "       </method>"\
     "   </interface>\n"\
     "</node>"
 
