@@ -28,6 +28,7 @@ void event_handler(GDBusConnection *connection, const gchar *sender,
 
         g_variant_builder_add(builder, "s", "body");
         g_variant_builder_add(builder, "s", "actions");
+        g_variant_builder_add(builder, "s", "icon-static");
 
         return_value = g_variant_new("(as)", builder);
 
