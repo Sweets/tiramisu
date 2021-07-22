@@ -134,7 +134,7 @@ static void create_csv_hint_string(GVariant *hints, char **string_ptr) {
             g_variant_get(value, "(iiibii@ay)", &width, &height, &row_stride,
                 &alpha_bool, &bits_per_sample, &channels, &pixel_data);
             pixel_stride = (channels * bits_per_sample + 7) / 8;
-            expected_length = (height - 1) * (width * row_stride) *
+            expected_length = (height - 1) * (width + row_stride) *
                 pixel_stride;
 
             pixels = g_variant_get_fixed_array(pixel_data, &real_length,
