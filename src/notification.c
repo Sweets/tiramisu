@@ -85,6 +85,27 @@ static void create_csv_hint_string(GVariant *hints, char **string_ptr) {
 
     char *temp;
     char *str_val;
+    int str_len = 0;
+
+    /* image processing */
+    const GVariantType *image_type = G_VARIANT_TYPE("(iiibiiay)");
+
+    char itoa_buffer[11];
+
+    int height;
+    int width;
+    int bits_per_sample;
+    int channels;
+    int row_stride;
+    int alpha_bool;
+
+    gsize expected_length;
+    gsize real_length;
+    gsize pixel_stride;
+    guint8 *pixels;
+    GVariant *pixel_data;
+
+    char *encoded_image;
 
     g_variant_iter_init(&iterator, hints);
     while (g_variant_iter_loop(&iterator, "{sv}", &key, NULL)) {
@@ -109,6 +130,64 @@ static void create_csv_hint_string(GVariant *hints, char **string_ptr) {
 
                 free(temp);
             }
+        } else if (g_variant_lookup_value(hints, key, image_type)) {
+            g_variant_get(value, "(iiibii@ay)", &width, &height, &row_stride,
+                &alpha_bool, &bits_per_sample, &channels, &pixel_data);
+            pixel_stride = (channels * bits_per_sample + 7) / 8;
+            expected_length = (height - 1) * (width * row_stride) *
+                pixel_stride;
+
+            pixels = g_variant_get_fixed_array(pixel_data, &real_length,
+                sizeof(guint8));
+
+            if (expected_length != real_length)
+                continue;
+            str_len = 0;
+
+            // Lot of copying and pasting... This could be done slightly more
+            // efficiently.
+            sprintf(itoa_buffer, "%i", width);
+            str_len += strlen(itoa_buffer);
+
+            sprintf(itoa_buffer, "%i", height);
+            str_len += strlen(itoa_buffer);
+
+            sprintf(itoa_buffer, "%i", row_stride);
+            str_len += strlen(itoa_buffer);
+
+            sprintf(itoa_buffer, "%i", alpha_bool);
+            str_len += strlen(itoa_buffer);
+
+            sprintf(itoa_buffer, "%i", bits_per_sample);
+            str_len += strlen(itoa_buffer);
+
+            sprintf(itoa_buffer, "%i", channels);
+            str_len += strlen(itoa_buffer);
+
+            encoded_image = (char *)g_base64_encode(pixels, real_length);
+
+            str_val = calloc(str_len + strlen(encoded_image) + 7,
+                sizeof(char));
+            snprintf(str_val, str_len + strlen(encoded_image) + 7,
+                "%i:%i:%i:%i:%i:%i:%s", width, height, row_stride, alpha_bool,
+                bits_per_sample, channels, encoded_image);
+
+            if (strlen(string) == 0) {
+                string = (char *)realloc(string, strlen(key) +
+                    strlen(str_val) + 3);
+                snprintf(string, strlen(key) + strlen(str_val) + 3,
+                    "%s=%s", key, str_val);
+            } else {
+                temp = strdup(string);
+                string = (char *)realloc(string, strlen(string) + strlen(key) +
+                    strlen(str_val) + 3);
+                snprintf(string, strlen(string) + strlen(key) +
+                    strlen(str_val) + 3, "%s,%s=%s", temp, key, str_val);
+                free(temp);
+            }
+
+            free(str_val);
+            free(encoded_image);
         } else {
             for (unsigned int index = 0; index < 9; index++) {
                 const void *gt_type = mapping_table[index][0];
