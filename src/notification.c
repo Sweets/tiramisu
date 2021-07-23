@@ -130,11 +130,11 @@ static void create_csv_hint_string(GVariant *hints, char **string_ptr) {
 
                 free(temp);
             }
-        } else if (g_variant_lookup_value(hints, key, image_type)) {
+        } else if ((value = g_variant_lookup_value(hints, key, image_type))) {
             g_variant_get(value, "(iiibii@ay)", &width, &height, &row_stride,
                 &alpha_bool, &bits_per_sample, &channels, &pixel_data);
             pixel_stride = (channels * bits_per_sample + 7) / 8;
-            expected_length = (height - 1) * (width + row_stride) *
+            expected_length = (height - 1) * row_stride + width *
                 pixel_stride;
 
             pixels = g_variant_get_fixed_array(pixel_data, &real_length,
