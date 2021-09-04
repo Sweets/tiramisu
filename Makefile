@@ -1,13 +1,13 @@
-
 TARGET	=	tiramisu
-SRC		:=	src/tiramisu.c src/events.c src/notification.c
+SRC	:=	src/tiramisu.c src/events.c src/notification.c
 
-PREFIX ?=	/usr/local
-INSTALL =   install -Dm755
+PREFIX	?=	/usr/local
+INSTALL	=	install -Dm755
+RM	?=	rm -f
 
-CFLAGS +=	-Wall -Wno-unused-value
-IFLAGS  =	$(shell pkg-config --cflags glib-2.0 gio-2.0)
-LFLAGS	=	$(shell pkg-config --libs glib-2.0 gio-2.0)
+CFLAGS	+=	-Wall -Wno-unused-value
+IFLAGS	=	`pkg-config --cflags glib-2.0 gio-2.0`
+LFLAGS	=	`pkg-config --libs glib-2.0 gio-2.0`
 
 all: $(TARGET)
 
