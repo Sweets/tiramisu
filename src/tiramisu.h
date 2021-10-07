@@ -57,4 +57,13 @@ extern int santize_output;
     "#hints\n"\
     "#timeout\n"
 
+#define JSON_OUTPUT_FORMAT "{'source': '#source', "\
+    "'icon': '#icon', "\
+    "'id': #id, "\
+    "'summary': '#summary', "\
+    "'body': '#body', "\
+    "'actions': '#actions', "\
+    "'hints': '#hints', "\
+    "'timeout': #timeout}\n";
+
 gboolean stop_main_loop(gpointer);
