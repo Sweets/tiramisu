@@ -16,6 +16,7 @@ GDBusNodeInfo *introspection = NULL;
 GMainLoop *main_loop = NULL;
 
 char *output_format;
+int sanitize_output = 0;
 
 gboolean stop_main_loop(gpointer user_data) {
     g_main_loop_quit(main_loop);
@@ -39,11 +40,11 @@ int main(int argc, char **argv) {
                 return EXIT_SUCCESS;
                 break;
             case 's':
+                sanitize_output = 1;
                 break;
             case 'j':
-                output_format =   "{'source': '#source', 'icon': '#icon', "\
-                    "'id': '#id', 'summary': '#summary', 'body': '#body', "\
-                    "'actions': '#actions', 'hints': '#hints', 'timeout': #timeout}";
+                sanitize_output = 1;
+                output_format = JSON_OUTPUT_FORMAT;
                 break;
             case 'o':
                 output_format = strdup(optarg);

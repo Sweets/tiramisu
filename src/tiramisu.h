@@ -11,6 +11,7 @@ extern GDBusNodeInfo *introspection;
 extern GMainLoop *main_loop;
 
 extern char *output_format;
+extern int santize_output;
 
 #ifdef DEBUG
 #define print(...) fprintf(stderr, __VA_ARGS__);
