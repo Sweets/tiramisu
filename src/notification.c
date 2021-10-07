@@ -35,6 +35,15 @@ void hydrate_notification(notification_t *notification, GVariant *parameters) {
     g_variant_iter_next(&iterator, "^a&s",   &notification->actions);
     g_variant_iter_next(&iterator, "@a{sv}", &notification->hints);
     g_variant_iter_next(&iterator, "i",      &notification->timeout);
+
+    if (sanitize_output) {
+        strsanitize(&notification->source);
+        strsanitize(&notification->icon);
+        strsanitize(&notification->summary);
+        strsanitize(&notification->body);
+        strsanitize(&notification->actions);
+        strsanitize(&notification->hints);
+    }
 }
 
 void interpolate_output_string(char **format_string, notification_t notification) {
