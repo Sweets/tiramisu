@@ -4,6 +4,7 @@
 #include <glib.h>
 
 #include "notification.h"
+#include "tiramisu.h"
 
 /* Pain. Suffering. */
 
@@ -41,8 +42,8 @@ void hydrate_notification(notification_t *notification, GVariant *parameters) {
         strsanitize(&notification->icon);
         strsanitize(&notification->summary);
         strsanitize(&notification->body);
-        strsanitize(&notification->actions);
-        strsanitize(&notification->hints);
+//        strsanitize(notification->actions);
+//        strsanitize(&notification->hints);
     }
 }
 
