@@ -294,7 +294,7 @@ static void strsanitize(char **_string) {
     if (!string || strlen(string) == 0)
         return;
 
-    int index, quotes, output_index = 0;
+    int index = 0, quotes = 0, output_index = 0;
     char cell;
 
     while ((cell = string[index++]))
