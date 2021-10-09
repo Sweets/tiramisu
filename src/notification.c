@@ -286,7 +286,13 @@ static void strreplsub(char **_haystack, const char *needle, const char *replace
 }
 
 static void strsanitize(char **_string) {
+    if (!_string)
+        return;
+
     char *string = *_string;
+
+    if (!string || strlen(string) == 0)
+        return;
 
     int index, quotes, output_index = 0;
     char cell;
