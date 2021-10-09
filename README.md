@@ -14,7 +14,7 @@ make notifications more accessible with text-to-speech, and so much more.
 
 # projects made with tiramisu and love
 
-- [polynotifications by alnj](https://github.com/alnj/polynotifications)
+- [polytiramisu by anufrievroman](https://github.com/anufrievroman/polytiramisu)
 
 # installation
 
