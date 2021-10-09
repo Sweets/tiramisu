@@ -1,60 +1,58 @@
-<h1><div align="center"><i>desktop notifications, the unix way</i></div></h1>
+<p align="center">
+  <b>tiramisu</b><br/>
+  desktop notifications, the UNIX way
+</p>
 
-tiramisu is a notification daemon based on dunst that outputs notifications
-to STDOUT in order to allow the user to process notifications any way they prefer.
+---
 
-# why?
+tiramisu is a notification daemon for \*nix desktops that implement notifications using dbus.
 
-By allowing users to determine what is done with notifications, there is infinitely more possibilities presented
-to the end-user than a simple notification daemon that displays a block of text on the screen and nothing more.
+Unlike other daemons, tiramisu does not have any sort of window or pop-up, but rather sends all notifications to STDOUT. Doing so enables endless customization from the end-user.
 
-Users could have notifications display in a pre-existing bar, make a control panel of some sort that shows
-notifications, push notifications to their phone if their computer has been idle for an amount of time,
-make notifications more accessible with text-to-speech, and so much more.
+---
 
-# projects made with tiramisu and love
+<p align="center">
+  <b>Crafted with ♡</b>
+</p>
 
-- [polytiramisu by anufrievroman](https://github.com/anufrievroman/polytiramisu)
+- [anufrievroman/polytiramisu](https://github.com/anufrievroman/polytiramisu)
 
-# installation
+---
 
-### by package manager
+<p align="center">
+  <b>Installation</b>
+</p>
 
-Nix users can install `nixos.tiramisu`
+|Distribution|Repository|Package name|
+|-|-|-|
+|Arch Linux|AUR|`tiramisu-git`|
+|Alpine Linux|Edge|`tiramisu`|
+|NixOS|stable|`nixos.tiramisu`|
 
-Arch users with an AUR package manager can install `tiramisu-git`
+Don't see your distribution? Check to make sure it wasn't forgotten at [repology](https://repology.org/projects/?search=tiramisu).
+Alternatively, build from source.
 
-### from source
-
-Clone the repository and build the project. Then move tiramisu to a location that is specified in `$PATH`.
-
-```
+```sh
 $ git clone https://github.com/Sweets/tiramisu
 $ cd ./tiramisu
-$ make
-# make install
+$ make && make install
 ```
 
-#### Note that the use of a pound symbol (#) denotes escalated privileges.
-#### On most Linux systems this can be done with the usage of `sudo`
+---
 
-# usage
+<p align="center">
+  <b>Usage</b>
+</p>
 
-tiramisu accepts a single parameter, that being `-o`, which allows users to specify an output format.
-The output format specified is interpolated by tiramisu. Listed below are values that are interpolated before output.
+By default, tiramisu outputs all information from a notification to standard output. You can change this with `-o`, or if you wish to use JSON format, `-j`. If you need the output format to be sanitized (quotes to be escaped), you can do so with `-s`.
 
-The values are listed by their appearance in the default output format.
+Using `-o` will interpolate your desired format.
 
-`#source`, `#icon`, `#id`, `#summary`, `#body`, `#actions`, `#hints`, `#timeout`
+Appropriate keys are `#source`, `#icon`, `#id`, `#summary`, `#body`, `#actions`, `#hints`, and `#timeout`. 
 
-#### Note that to use linebreaks you will need to actually have a linebreak in the output string.
-#### tiramisu will not collapse \X to the appropriate sequence.
+Using `-j` implies `-s`.
 
-### Example of default output
-
-```
-$ tiramisu
-```
+Below is an example of the default output of tiramisu with no flags.
 
 ```
 evolution-mail-notification
@@ -66,5 +64,3 @@ desktop-entry=org.gnome.Evolution|urgency=1
 Show INBOX=default
 -1
 ```
-
-#### Note that only a single process can claim the org.freedesktop.Notifications name at a given time, so any other running notification daemon must be killed before running tiramisu.
