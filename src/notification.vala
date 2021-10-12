@@ -3,7 +3,7 @@ public class Notification : Object {
         string summary, string body, string[] actions,
         GLib.HashTable<string, GLib.Variant> hints, int timeout) {
         
-        string fmt = Tiramisu.json_format;
+        string fmt = Tiramisu.format;
 
         fmt = fmt
             .replace("#source", source)
