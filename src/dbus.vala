@@ -21,7 +21,7 @@ public class NotificationDaemon : Object {
         GLib.HashTable<string, GLib.Variant> hints,
         int expire_timeout) throws DBusError, IOError {
 
-        Tiramisu.output(app_name, replaces_id, app_icon, summary,
+        Notification.output(app_name, replaces_id, app_icon, summary,
             body, actions, hints, expire_timeout);
 
         return 0;
