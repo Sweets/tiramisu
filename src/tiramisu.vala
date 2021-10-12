@@ -1,12 +1,27 @@
 public class Tiramisu : Application {
     public static string format = "#source\n#icon\n#id\n#summary\n" +
         "#body\n#actions\n#hints\n#timeout\n";
-
     public static string json_format = "{'source': '#source', " +
         "'id': #id, 'summary': '#summary', 'body': '#body', " +
         "'actions': '#actions', 'hints': '#hints', 'timeout': #timeout}\n";
 
+    public static bool sanitize = false;
+    public static bool json     = false;
+
+    private const OptionEntry[] options = {
+        {"format",   'o', OptionFlags.NONE, OptionArg.STRING, ref format,
+            "Output format specifier",                "FORMAT"},
+
+        {"json",     'j', OptionFlags.NONE, OptionArg.NONE,   ref json,
+            "Output using JSON (implies --sanitize)", null},
+
+        {"sanitize", 's', OptionFlags.NONE, OptionArg.NONE,   ref sanitize,
+            "Sanitize output; escapes double quotes", null},
+        {null}
+    };
+
     private Tiramisu() {
+        this.add_main_option_entries(options);
     }
 
     public override void activate() {
