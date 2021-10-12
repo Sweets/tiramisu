@@ -2,28 +2,41 @@ MainLoop loop;
 
 [DBus (name = "org.freedesktop.Notifications")]
 public class Tiramisu : Object {
-    public string[] get_server_information() throws GLib.Error {
-        return {"tiramisu", "Sweets", "1.2", "1.2"};
+    [DBus (name = "GetServerInformation")]
+    public void get_server_information(out string name,
+        out string vendor, out string version, out string spec_version)
+        throws DBusError, IOError {
+        name = "tiramisu";
+        vendor = "Sweets";
+        version = "1.2";
+        spec_version = "1.2";
     }
 
-    public string[] get_capabilities() throws GLib.Error {
-        return {"body", "actions", "icon-static"};
+    [DBus (name = "GetCapabilities")]
+    public string[] get_capabilities() throws DBusError, IOError {
+        return {"body"};
     }
+
+    [DBus (name = "Notify")]
+    public uint Notify(string app_name, uint replaces_id, string app_icon,
+        string summary, string body, string[] actions,
+        GLib.HashTable<string, GLib.Variant> hints,
+        int expire_timeout) throws DBusError, IOError {
+
+        message("Notification data received");
+
+        return 0;
+    }
+
+    // notification_closed
+    // close_notification
+    // action_invoked
 }
 
-/*
- * TODO: move the signal methods
- */
-
-
-/*
- * TODO: move above signal methods to a new file
- */
-
-
 int main() {
+    loop = new MainLoop();
     Bus.own_name(BusType.SESSION, "org.freedesktop.Notifications",
-        BusNameOwnerFlags.NONE,
+        BusNameOwnerFlags.DO_NOT_QUEUE,
         (dbus_connection) => {
             // Bus acquired, register object
             try {
@@ -31,13 +44,14 @@ int main() {
                     "/org/freedesktop/Notifications",
                     new Tiramisu()
                 );
-            } catch (IOError error) {
-                stderr.printf("Bus not acquired; unable to register object");
+            } catch (IOError _error) {
+                error("Bus not acquired; unable to register object");
             }
         },
         () => {}, // Name acquired
-        () => stderr.printf("name not acquired\n"));
-    loop = new MainLoop();
+        () => {
+            error("Unable to acquired name org.freedesktop.Notifications");
+        });
     loop.run();
 
     return 0;
