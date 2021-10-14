@@ -3,6 +3,62 @@ string sanitize(string subj) {
 }
 
 public class Notification : Object {
+    public static string create_csv_hint_string(
+        GLib.HashTable<string, GLib.Variant> hints) {
+
+        string output = "";
+        string buffer = "";
+        string separator = "";
+
+        /* Image data bullshit */
+        GLib.VariantType image_type = new GLib.VariantType("(iiibiiay)");
+
+        uint8[] pixels = {};
+        GLib.Variant pixel_data = null;
+
+        hints.foreach((key, value) => {
+            string _key = key;
+            string _value = value.print(false);
+
+            if (Tiramisu.sanitize) {
+                _key = sanitize(_key);
+
+                if (value.is_of_type(GLib.VariantType.STRING)) {
+                    _value = sanitize(_value.substring(1, _value.length - 2));
+                    _value = @"'$(_value)'";
+                }
+            }
+
+            if (Tiramisu.json)
+                buffer = buffer.concat(separator, @"'$(_key)': ");
+            else
+                buffer = buffer.concat(separator, _key, "=");
+
+            if (value.is_of_type(image_type)) {
+                value.get("(iiibii@ay)", null, null, null, null, null, null,
+                    out pixel_data);
+
+                pixels = pixel_data.get_data_as_bytes().get_data();
+                string encoded_image = GLib.Base64.encode((uchar[])pixels);
+
+                // width, height, row_stride, alpha_bool, bits_per_sample, channels, image
+
+            } else
+                buffer = buffer.concat(_value);
+
+            output = output.concat(buffer);
+            buffer = "";
+            separator = ",";
+        });
+
+        if (Tiramisu.json)
+            output = @"{$(output)}";
+        else
+            output = @"'$(output)'";
+
+        return output;
+    }
+
     public static void output(string source, uint replaces_id, string icon,
         string summary, string body, string[] actions,
         GLib.HashTable<string, GLib.Variant> hints, int timeout) {
@@ -24,6 +80,8 @@ public class Notification : Object {
             _body    = sanitize(_body);
         }
 
+        string hint_csv = create_csv_hint_string(hints);
+
         fmt = fmt
             .replace("#source",  app_name)
             .replace("#id",      replaces_id.to_string())
@@ -31,7 +89,7 @@ public class Notification : Object {
             .replace("#summary", _summary)
             .replace("#body",    _body)
             .replace("#actions", "TODO(actions)")
-            .replace("#hints",   "TODO(hints)")
+            .replace("#hints",   hint_csv)
             .replace("#timeout", timeout.to_string());
 
         stdout.printf(fmt + "\n");
