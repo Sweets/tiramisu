@@ -3,7 +3,7 @@ public class Tiramisu : Application {
         "#body\n#actions\n#hints\n#timeout";
     public static string json_format = "{'source': '#source', " +
         "'id': #id, 'summary': '#summary', 'body': '#body', " +
-        "'actions': '#actions', 'hints': '#hints', 'timeout': #timeout}";
+        "'actions': '#actions', 'hints': #hints, 'timeout': #timeout}";
 
     public static bool sanitize = false;
     public static bool json     = false;
