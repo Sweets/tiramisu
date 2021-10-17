@@ -16,12 +16,11 @@ public class Notification : Object {
 
         uint width = 0, height = 0, row_stride = 0, bits_per_sample = 0,
             channels = 0;
-        bool alpha;
+        bool alpha = false;
 
         uint8[] pixels = {};
         GLib.Variant pixel_data = null;
-
-        string value_string;
+        string value_string = "";
 
         hints.foreach((key, value) => {
             string _key = key;
@@ -50,7 +49,7 @@ public class Notification : Object {
                 string encoded_image = GLib.Base64.encode((uchar[])pixels);
 
                 value_string = "".concat(@"$(width):$(height):$(row_stride):",
-                    @"$(alpha):$(bits_per_sample):$(channels):". encoded_image);
+                    @"$(alpha):$(bits_per_sample):$(channels):", encoded_image);
 
                 if (Tiramisu.json)
                     buffer = buffer.concat(@"'$(value_string)'");
