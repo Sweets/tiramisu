@@ -13,7 +13,7 @@ LFLAGS	=	`pkg-config --libs glib-2.0 gio-2.0`
 all: $(TARGET)
 
 $(TARGET): $(SRC)
-	$(VALAC) $(IFLAGS) $(SRC) -d ./build -o $(TARGET)
+	$(VALAC) $(IFLAGS) $(SRC) -o $(TARGET)
 #	$(CC) $(CFLAGS) $(IFLAGS) $(SRC) $(LFLAGS) $(LDFLAGS) -o $(TARGET)
 
 install: $(TARGET)
