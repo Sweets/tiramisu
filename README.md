@@ -23,6 +23,8 @@ Unlike other daemons, tiramisu does not have any sort of window or pop-up, but r
   <b>Installation</b>
 </p>
 
+Tiramisu depends upon Vala, gio, and glib.
+
 |Distribution|Repository|Package name|
 |-|-|-|
 |Arch Linux|AUR|`tiramisu-git`|
