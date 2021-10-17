@@ -5,6 +5,7 @@ string sanitize(string subj) {
 public class Notification : Object {
     public static string create_csv_hint_string(
         GLib.HashTable<string, GLib.Variant> hints) {
+        // TODO: This implementation is not to my liking. Rewrite.
 
         string output = "";
         string buffer = "";
@@ -13,8 +14,14 @@ public class Notification : Object {
         /* Image data bullshit */
         GLib.VariantType image_type = new GLib.VariantType("(iiibiiay)");
 
+        uint width = 0, height = 0, row_stride = 0, bits_per_sample = 0,
+            channels = 0;
+        bool alpha;
+
         uint8[] pixels = {};
         GLib.Variant pixel_data = null;
+
+        string value_string;
 
         hints.foreach((key, value) => {
             string _key = key;
@@ -35,14 +42,20 @@ public class Notification : Object {
                 buffer = buffer.concat(separator, _key, "=");
 
             if (value.is_of_type(image_type)) {
-                value.get("(iiibii@ay)", null, null, null, null, null, null,
-                    out pixel_data);
+                value.get("(iiibii@ay)",
+                    out width, out height, out row_stride, out alpha,
+                    out bits_per_sample, out channels, out pixel_data);
 
                 pixels = pixel_data.get_data_as_bytes().get_data();
                 string encoded_image = GLib.Base64.encode((uchar[])pixels);
 
-                // width, height, row_stride, alpha_bool, bits_per_sample, channels, image
+                value_string = "".concat(@"$(width):$(height):$(row_stride):",
+                    @"$(alpha):$(bits_per_sample):$(channels):". encoded_image);
 
+                if (Tiramisu.json)
+                    buffer = buffer.concat(@"'$(value_string)'");
+                else
+                    buffer = buffer.concat(value_string);
             } else
                 buffer = buffer.concat(_value);
 
