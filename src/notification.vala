@@ -3,70 +3,98 @@ string sanitize(string subj) {
 }
 
 public class Notification : Object {
-    public static string create_csv_hint_string(
-        GLib.HashTable<string, GLib.Variant> hints) {
-        // TODO: This implementation is not to my liking. Rewrite.
-
-        string output = "";
-        string buffer = "";
-        string separator = "";
-
-        /* Image data bullshit */
-        GLib.VariantType image_type = new GLib.VariantType("(iiibiiay)");
-
+    public static string image_get_base64_representation(GLib.Variant image) {
         uint width = 0, height = 0, row_stride = 0, bits_per_sample = 0,
             channels = 0;
         bool alpha = false;
 
         uint8[] pixels = {};
         GLib.Variant pixel_data = null;
-        string value_string = "";
+
+        image.get("(iiibii@ay)",
+            out width, out height, out row_stride, out alpha,
+            out bits_per_sample, out channels, out pixel_data);
+
+        pixels = pixel_data.get_data_as_bytes().get_data();
+        string encoded_image = GLib.Base64.encode((uchar[])pixels);
+
+        return "".concat(@"$(width):$(height):$(row_stride):",
+            @"$(alpha):$(bits_per_sample):$(channels):", encoded_image);
+    }
+
+    public static string create_hint_json_string(
+        GLib.HashTable<string, GLib.Variant> hints) {
+        // Only if Tiramisu.json is true. Implies Tiramisu.sanitize.
+
+        string output = "";
+        string buffer = "";
+        string separator = "";
+
+        GLib.VariantType image_type = new GLib.VariantType("(iiibiiay)");
 
         hints.foreach((key, value) => {
-            string _key = key;
-            string _value = value.print(false);
+            string _key   = key;
+            string _value = "";
+            
+            _key   = sanitize(_key);
+            buffer = buffer.concat(separator, @"'$(_key)': ");
 
-            if (Tiramisu.sanitize) {
-                _key = sanitize(_key);
-
-                if (value.is_of_type(GLib.VariantType.STRING)) {
-                    _value = sanitize(_value.substring(1, _value.length - 2));
-                    _value = @"'$(_value)'";
-                }
+            if (value.is_of_type(GLib.VariantType.STRING)) {
+                _value = value.print(false);
+                _value = _value.substring(1, _value.length - 2);
+                _value = sanitize(_value);
+                _value = @"'$(_value)'";
+            } else if (value.is_of_type(image_type)) {
+                _value = image_get_base64_representation(value);
+            } else {
+                _value = value.print(false);
             }
 
-            if (Tiramisu.json)
-                buffer = buffer.concat(separator, @"'$(_key)': ");
-            else
-                buffer = buffer.concat(separator, _key, "=");
+            buffer    = buffer.concat(@"$(_value)");
+            output    = output.concat(buffer);
 
-            if (value.is_of_type(image_type)) {
-                value.get("(iiibii@ay)",
-                    out width, out height, out row_stride, out alpha,
-                    out bits_per_sample, out channels, out pixel_data);
-
-                pixels = pixel_data.get_data_as_bytes().get_data();
-                string encoded_image = GLib.Base64.encode((uchar[])pixels);
-
-                value_string = "".concat(@"$(width):$(height):$(row_stride):",
-                    @"$(alpha):$(bits_per_sample):$(channels):", encoded_image);
-
-                if (Tiramisu.json)
-                    buffer = buffer.concat(@"'$(value_string)'");
-                else
-                    buffer = buffer.concat(value_string);
-            } else
-                buffer = buffer.concat(_value);
-
-            output = output.concat(buffer);
-            buffer = "";
-            separator = ",";
+            buffer    = "";
+            separator = ", ";
         });
 
-        if (Tiramisu.json)
-            output = @"{$(output)}";
-        else
-            output = @"'$(output)'";
+        return @"{$(output)}";
+    }
+
+    public static string create_hint_csv_string(
+        GLib.HashTable<string, GLib.Variant> hints) {
+
+        string output = "";
+        string buffer = "";
+        string separator = "";
+        
+        GLib.VariantType image_type = new GLib.VariantType("(iiibiiay)");
+
+        hints.foreach((key, value) => {
+            string _key   = key;
+            string _value = "";
+
+            if (value.is_of_type(GLib.VariantType.STRING)) {
+                _value = value.print(false);
+                _value = _value.substring(1, _value.length - 2);
+                _value = sanitize(_value);
+                _value = @"'$(_value)'";
+            } else if (value.is_of_type(image_type)) {
+                _value = image_get_base64_representation(value);
+            } else {
+                _value = value.print(false);
+            }
+
+            if (Tiramisu.sanitize) {
+                _key   = sanitize(_key);
+                _value = sanitize(_value);
+            }
+
+            buffer    = buffer.concat(separator, @"$(_key)=$(_value)");
+            output    = output.concat(buffer);
+
+            buffer    = "";
+            separator = ",";
+        });
 
         return output;
     }
@@ -92,7 +120,11 @@ public class Notification : Object {
             _body    = sanitize(_body);
         }
 
-        string hint_csv = create_csv_hint_string(hints);
+        string hint_string = "";
+        if (Tiramisu.json)
+            hint_string = create_hint_json_string(hints);
+        else
+            hint_string = create_hint_csv_string(hints);
 
         fmt = fmt
             .replace("#source",  app_name)
@@ -101,7 +133,7 @@ public class Notification : Object {
             .replace("#summary", _summary)
             .replace("#body",    _body)
             .replace("#actions", "TODO(actions)")
-            .replace("#hints",   hint_csv)
+            .replace("#hints",   hint_string)
             .replace("#timeout", timeout.to_string());
 
         stdout.printf(fmt + "\n");
