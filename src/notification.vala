@@ -132,7 +132,7 @@ public class Notification : Object {
             .replace("#icon",    app_icon)
             .replace("#summary", _summary)
             .replace("#body",    _body)
-            .replace("#actions", "TODO(actions)")
+            .replace("#actions", string.joinv(",", actions))
             .replace("#hints",   hint_string)
             .replace("#timeout", timeout.to_string());
 
