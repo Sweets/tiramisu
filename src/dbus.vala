@@ -12,7 +12,7 @@ public class NotificationDaemon : Object {
 
     [DBus (name = "GetCapabilities")]
     public string[] get_capabilities() throws DBusError, IOError {
-        return {"body"};
+        return {"body", "actions"};
     }
 
     [DBus (name = "Notify")]
