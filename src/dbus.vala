@@ -6,13 +6,13 @@ public class NotificationDaemon : Object {
         throws DBusError, IOError {
         name = "tiramisu";
         vendor = "Sweets";
-        version = "1.2";
+        version = "2.0";
         spec_version = "1.2";
     }
 
     [DBus (name = "GetCapabilities")]
     public string[] get_capabilities() throws DBusError, IOError {
-        return {"body", "actions"};
+        return {"body", "actions", "icon-static"};
     }
 
     [DBus (name = "Notify")]
