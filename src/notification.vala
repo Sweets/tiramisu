@@ -1,5 +1,5 @@
 string sanitize(string subj) {
-    return subj.replace("'", "\\'");
+    return subj.replace("\"", "\\\"");
 }
 
 public class Notification : Object {
@@ -37,17 +37,17 @@ public class Notification : Object {
             string _value = "";
             
             _key   = sanitize(_key);
-            buffer = buffer.concat(separator, @"'$(_key)': ");
+            buffer = buffer.concat(separator, @"\"$(_key)\": ");
 
             if (value.is_of_type(GLib.VariantType.STRING)) {
                 _value = value.print(false);
                 _value = _value.substring(1, _value.length - 2);
                 _value = sanitize(_value);
-                _value = @"'$(_value)'";
+                _value = @"\"$(_value)\"";
             } else if (value.is_of_type(image_type)) {
                 _value = image_get_base64_representation(value);
             } else {
-                _value = value.print(false);
+                _value = @"\"$(value.print(false))\"";
             }
 
             buffer    = buffer.concat(@"$(_value)");
