@@ -45,7 +45,7 @@ public class Notification : Object {
                 _value = sanitize(_value);
                 _value = @"\"$(_value)\"";
             } else if (value.is_of_type(image_type)) {
-                _value = image_get_base64_representation(value);
+                _value = @"\"$(image_get_base64_representation(value))\"";
             } else {
                 _value = @"\"$(value.print(false))\"";
             }
