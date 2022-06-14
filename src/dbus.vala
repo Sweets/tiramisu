@@ -1,5 +1,7 @@
 [DBus (name = "org.freedesktop.Notifications")]
 public class NotificationDaemon : Object {
+    public static uint notification_id = 1;
+
     [DBus (name = "GetServerInformation")]
     public void get_server_information(out string name,
         out string vendor, out string version, out string spec_version)
@@ -24,7 +26,10 @@ public class NotificationDaemon : Object {
         Notification.output(app_name, replaces_id, app_icon, summary,
             body, actions, hints, expire_timeout);
 
-        return 0;
+        if (replaces_id == 0)
+            return notification_id++;
+        
+        return replaces_id;
     }
 
     [DBus (name = "CloseNotification")]
