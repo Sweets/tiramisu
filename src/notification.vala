@@ -1,7 +1,7 @@
 string sanitize(string subj) {
     return subj
         .replace("\"", "\\\"")
-        .replace("\r", "\\r)
+        .replace("\r", "\\r")
         .replace("\n", "\\n"); // ideally all control sequences \u0000 to \u001f
 }
 
