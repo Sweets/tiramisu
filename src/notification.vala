@@ -1,5 +1,8 @@
 string sanitize(string subj) {
-    return subj.replace("\"", "\\\"");
+    return subj
+        .replace("\"", "\\\"")
+        .replace("\r", "\\r)
+        .replace("\n", "\\n"); // ideally all control sequences \u0000 to \u001f
 }
 
 public class Notification : Object {
@@ -108,10 +111,15 @@ public class Notification : Object {
         string _summary = summary;
         string _body    = body;
 
+        string hint_string = "";
         string fmt = Tiramisu.format;
 
-        if (Tiramisu.json)
+        if (Tiramisu.json) {
             fmt = Tiramisu.json_format;
+            hint_string = create_hint_json_string(hints);
+        } else {
+            hint_string = create_hint_csv_string(hints);
+        }
 
         if (Tiramisu.sanitize) {
             app_name = sanitize(app_name);
@@ -119,12 +127,6 @@ public class Notification : Object {
             _summary = sanitize(_summary);
             _body    = sanitize(_body);
         }
-
-        string hint_string = "";
-        if (Tiramisu.json)
-            hint_string = create_hint_json_string(hints);
-        else
-            hint_string = create_hint_csv_string(hints);
 
         fmt = fmt
             .replace("#source",  app_name)
