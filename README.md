@@ -28,7 +28,7 @@ Tiramisu depends upon Vala, gio, and glib.
 |Distribution|Repository|Package name|
 |-|-|-|
 |Arch Linux|AUR|`tiramisu-git`|
-|Alpine Linux|Edge|`tiramisu`|
+|Alpine Linux|v3.15+|`tiramisu`|
 |NixOS|stable|`nixos.tiramisu`|
 
 Don't see your distribution? Check to make sure it wasn't forgotten at [repology](https://repology.org/projects/?search=tiramisu).
