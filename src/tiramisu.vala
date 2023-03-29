@@ -2,8 +2,9 @@ public class Tiramisu : Application {
     public static string format = "#source\n#icon\n#id\n#summary\n" +
         "#body\n#actions\n#hints\n#timeout";
     public static string json_format = "{\"source\": \"#source\", " +
-        "\"id\": #id, \"summary\": \"#summary\", \"body\": \"#body\", " +
-        "\"actions\": \"#actions\", \"hints\": #hints, \"timeout\": #timeout}";
+        "\"id\": #id, \"summary\": \"#summary\", \"body\": \"#body\", " + 
+        "\"icon\": \"#icon\", \"actions\": \"#actions\", \"hints\": #hints, " +
+        "\"timeout\": #timeout}";
 
     public static bool sanitize = false;
     public static bool json     = false;
